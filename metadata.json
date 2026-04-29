@@ -1,0 +1,14 @@
+{
+  "name": "Précieuse Empire",
+  "description": "L'empire de la beauté africaine par Mlle Précieuse. Boutique de cosmétiques haut de gamme et gestion complète.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone",
+    "geolocation"
+  ],
+  "majorCapabilities": [
+    "product_catalog",
+    "admin_dashboard",
+    "whatsapp_integration"
+  ]
+}
