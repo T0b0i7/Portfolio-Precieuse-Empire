@@ -5,15 +5,7 @@ import { MapPin, Calendar, Clock, ChevronLeft, MessageCircle, Share2, Users, Hea
 import { cn } from "@/src/lib/utils";
 import { toast } from "react-hot-toast";
 
-interface Event {
-  id: number;
-  title: string;
-  description: string;
-  date: string;
-  location: string;
-  image: string;
-  status: 'upcoming' | 'finished' | 'ongoing';
-}
+import { dataService, Event } from "../services/dataService";
 
 export default function EventDetail() {
   const { id } = useParams();
@@ -24,10 +16,12 @@ export default function EventDetail() {
   const [showShareMenu, setShowShareMenu] = useState(false);
 
   useEffect(() => {
-    fetch("/api/events")
-      .then(res => res.json())
-      .then(data => {
-        const found = data.find((e: Event) => e.id === Number(id));
+    const loadEvent = async () => {
+      setLoading(true);
+      try {
+        if (!id) return;
+        const data = await dataService.getEvents();
+        const found = data.find((e: Event) => e.id === id);
         if (found) {
           setEvent(found);
           const likes = JSON.parse(localStorage.getItem("liked_events") || "[]");
@@ -35,9 +29,14 @@ export default function EventDetail() {
         } else {
           navigate("/evenements");
         }
-      })
-      .finally(() => setLoading(false));
+      } catch (error) {
+        toast.error("Erreur de chargement");
+      } finally {
+        setLoading(false);
+      }
+    };
     
+    loadEvent();
     window.scrollTo(0, 0);
   }, [id, navigate]);
 
@@ -46,7 +45,7 @@ export default function EventDetail() {
     const likes = JSON.parse(localStorage.getItem("liked_events") || "[]");
     let newLikes;
     if (isLiked) {
-      newLikes = likes.filter((i: number) => i !== event.id);
+      newLikes = likes.filter((i: string) => i !== event.id);
       toast.success("Retiré de vos favoris");
     } else {
       newLikes = [...likes, event.id];

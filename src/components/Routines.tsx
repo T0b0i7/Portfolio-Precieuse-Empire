@@ -1,18 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { ChevronRight, Clock, Sparkles, Filter } from "lucide-react";
+import { ChevronRight, Clock, Sparkles } from "lucide-react";
 import { Link } from "react-router-dom";
-import { cn } from "@/src/lib/utils";
+import { cn } from "../lib/utils";
+import { TextSlide, Magnetic, Reveal, CinematicImage } from "./ui/motion";
 
-interface Routine {
-  id: number;
-  title: string;
-  excerpt: string;
-  content: string;
-  image: string;
-  category: string;
-  date: string;
-}
+import { dataService, Routine } from "../services/dataService";
 
 export default function Routines() {
   const [routines, setRoutines] = useState<Routine[]>([]);
@@ -20,9 +13,11 @@ export default function Routines() {
   const categories = ["Tous", "Grasse", "Sèche", "Mixte", "Normale", "Sensible"];
 
   useEffect(() => {
-    fetch("/api/routines")
-      .then(res => res.json())
-      .then(setRoutines);
+    const loadRoutines = async () => {
+      const data = await dataService.getRoutines();
+      setRoutines(data);
+    };
+    loadRoutines();
   }, []);
 
   const filteredRoutines = routines.filter(r => filter === "Tous" || r.category === filter);
@@ -30,108 +25,91 @@ export default function Routines() {
   return (
     <div className="pt-20">
       {/* Hero Section */}
-      <section className="bg-brand-ebony text-brand-cream py-32 px-6 relative overflow-hidden">
-        <div className="max-w-7xl mx-auto relative z-10 text-center">
-          <motion.p 
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="micro-label text-brand-gold mb-6 tracking-[0.4em]"
-          >
-            L'ART DU SOIN
-          </motion.p>
-          <motion.h1 
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="luxury-text text-5xl md:text-8xl font-light mb-8 lg:leading-tight text-white"
-          >
-            Rituels & Secrets <br /> de Teint
-          </motion.h1>
-          <motion.p 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.2 }}
-            className="text-lg text-brand-cream/60 max-w-2xl mx-auto leading-relaxed"
-          >
-            Découvrez nos guides éditoriaux conçus pour accompagner chaque peau vers son plein potentiel. La beauté est un héritage que nous cultivons ensemble.
-          </motion.p>
+      <section className="bg-brand-ebony text-brand-cream border-b border-white/5 h-[80vh] flex items-center relative overflow-hidden">
+        <div className="absolute inset-0 z-0">
+          <CinematicImage src="https://images.unsplash.com/photo-1590439471364-192aa70c0b53?auto=format&fit=crop&q=80&w=2000" className="opacity-30 rounded-none h-full" alt="Rituals" />
+          <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-brand-ebony to-transparent" />
         </div>
-        
-        {/* Abstract Background Elements */}
-        <div className="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none">
-           <div className="absolute top-1/2 left-10 w-96 h-96 bg-brand-gold rounded-full blur-[120px]" />
-           <div className="absolute bottom-0 right-10 w-96 h-96 bg-brand-gold rounded-full blur-[120px]" />
+        <div className="max-w-7xl mx-auto px-6 relative z-10 w-full">
+          <TextSlide className="mb-6">
+            <p className="micro-label text-brand-gold tracking-[0.8em] uppercase font-bold">LES ARCHIVES DU SOIN</p>
+          </TextSlide>
+          <TextSlide delay={0.2} className="mb-10">
+            <h1 className="luxury-text text-7xl md:text-[10rem] font-black leading-none tracking-tighter text-white">RITUELS.</h1>
+          </TextSlide>
+          <Reveal delay={0.4} className="border-l border-brand-gold/30 pl-10 max-w-2xl">
+            <p className="text-xl text-brand-cream/60 leading-relaxed font-medium italic">
+              L'art de la transmission. Découvrez nos protocoles sacrés, où la science moderne rencontre la sagesse ancestrale pour sublimer chaque millimètre de votre peau.
+            </p>
+          </Reveal>
         </div>
       </section>
 
-      <div className="max-w-7xl mx-auto px-6 py-24">
-        {/* Filter Bar */}
-        <div className="flex flex-col md:flex-row items-center justify-between gap-8 mb-20 border-b border-brand-ebony/5 pb-12">
-          <div className="flex items-center gap-3">
-             <Filter size={16} className="text-brand-gold" />
-             <span className="micro-label font-bold text-brand-ebony">TYPE DE PEAU</span>
+      <div className="max-w-7xl mx-auto px-6 py-40">
+        {/* Filter Bar - Forge UI High Contrast */}
+        <div className="flex flex-col md:flex-row items-center justify-between gap-12 mb-32 border-b border-brand-ebony/5 pb-16">
+          <div className="flex items-center gap-6">
+             <span className="micro-label font-black text-brand-gold tracking-[0.5em]">TYPE DE PEAU :</span>
           </div>
-          <div className="flex gap-4 overflow-x-auto no-scrollbar w-full md:w-auto pb-4 md:pb-0">
+          <div className="flex gap-4 overflow-x-auto no-scrollbar w-full md:w-auto">
              {categories.map(cat => (
-               <button
-                 key={cat}
-                 onClick={() => setFilter(cat)}
-                 className={cn(
-                   "px-8 py-3 rounded-full micro-label whitespace-nowrap transition-all font-bold cursor-pointer",
-                   filter === cat 
-                     ? "bg-brand-gold text-brand-ebony shadow-lg" 
-                     : "bg-brand-ebony/5 text-brand-ebony/60 hover:bg-brand-ebony/10"
-                 )}
-               >
-                 {cat}
-               </button>
+               <Magnetic key={cat}>
+                 <button
+                   onClick={() => setFilter(cat)}
+                   className={cn(
+                     "px-8 py-3 rounded-full text-[10px] uppercase tracking-[0.2em] transition-all font-bold cursor-pointer border",
+                     filter === cat 
+                       ? "bg-brand-gold border-brand-gold text-brand-ebony shadow-lg" 
+                       : "border-brand-ebony/10 text-brand-ebony/40 hover:text-brand-ebony"
+                   )}
+                 >
+                   {cat}
+                 </button>
+               </Magnetic>
              ))}
           </div>
         </div>
 
-        {/* Magazine Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
+        {/* Magazine Grid - Vengence UI Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-20">
           <AnimatePresence mode="popLayout">
             {filteredRoutines.map((routine, idx) => (
-              <motion.article
-                key={routine.id}
-                layout
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.9 }}
-                transition={{ delay: idx * 0.1 }}
-                className="group flex flex-col h-full bg-white rounded-[3rem] overflow-hidden border border-brand-ink/5 shadow-sm hover:shadow-2xl transition-all duration-500"
-              >
-                <Link to={`/routines/${routine.id}`} className="aspect-[4/5] overflow-hidden relative">
-                  <img 
-                    src={routine.image} 
-                    className="w-full h-full object-cover transition-transform duration-[2s] group-hover:scale-110" 
-                    alt={routine.title}
-                  />
-                  <div className="absolute top-8 left-8">
-                     <span className="bg-white/90 backdrop-blur-md px-6 py-2 rounded-full micro-label text-brand-ink shadow-lg">
-                        {routine.category}
-                     </span>
-                  </div>
-                </Link>
+              <Reveal key={routine.id} delay={idx * 0.1}>
+                <article className="group flex flex-col h-full bg-white relative overflow-hidden rounded-[3rem] border border-brand-ink/5 pt-1 hover:border-brand-gold/20 transition-all duration-700 shadow-sm hover:shadow-2xl">
+                  <Link to={`/routines/${routine.id}`} className="aspect-[4/5] overflow-hidden relative block mx-2 mt-2 rounded-[2.5rem]">
+                    <img 
+                      src={routine.image} 
+                      className="w-full h-full object-cover transition-transform duration-[1.5s] group-hover:scale-110" 
+                      alt={routine.title}
+                    />
+                    <div className="absolute inset-0 bg-brand-ebony/5" />
+                    <div className="absolute top-10 left-10">
+                       <span className="bg-brand-cream/90 backdrop-blur-md text-brand-ebony px-8 py-3 rounded-full micro-label text-[9px] tracking-widest font-black shadow-xl">
+                          {routine.category.toUpperCase()}
+                       </span>
+                    </div>
+                  </Link>
 
-                <div className="p-10 flex flex-col flex-1">
-                   <div className="flex items-center gap-4 mb-6 opacity-40 micro-label font-bold">
-                      <span className="flex items-center gap-2"><Clock size={14} /> 10 MIN</span>
-                      <span className="flex items-center gap-2"><Sparkles size={14} /> {routine.category.toUpperCase()}</span>
-                   </div>
-                   <h2 className="luxury-text text-3xl mb-4 group-hover:text-brand-gold transition-colors text-brand-ebony">{routine.title}</h2>
-                   <p className="text-ui-muted font-medium line-clamp-3 leading-relaxed mb-8 flex-1">
-                     {routine.excerpt}
-                   </p>
-                   <Link 
-                     to={`/routines/${routine.id}`}
-                     className="inline-flex items-center gap-2 micro-label font-bold text-brand-gold group/link"
-                   >
-                     LIRE LA ROUTINE <ChevronRight size={16} className="group-hover/link:translate-x-2 transition-transform" />
-                   </Link>
-                </div>
-              </motion.article>
+                  <div className="p-12 flex flex-col flex-1">
+                     <div className="flex items-center gap-8 mb-8 opacity-40 micro-label font-bold text-[8px] tracking-[0.3em]">
+                        <span className="flex items-center gap-3"><Clock size={14} className="text-brand-gold"/> 10 MIN</span>
+                        <span className="flex items-center gap-3"><Sparkles size={14} className="text-brand-gold"/> EXCELLENCE</span>
+                     </div>
+                     <h2 className="luxury-text text-4xl mb-6 group-hover:text-brand-gold transition-colors text-brand-ebony leading-tight">{routine.title}</h2>
+                     <p className="text-ui-muted font-medium italic line-clamp-3 leading-relaxed mb-10 flex-1 opacity-60">
+                       "{routine.excerpt}"
+                     </p>
+                     <Magnetic>
+                       <Link 
+                         to={`/routines/${routine.id}`}
+                         className="inline-flex items-center gap-4 micro-label font-black text-brand-gold group-hover:gap-8 transition-all"
+                       >
+                         ENTRER DANS LE RITUEL <ChevronRight size={18} />
+                       </Link>
+                     </Magnetic>
+                  </div>
+                </article>
+              </Reveal>
             ))}
           </AnimatePresence>
         </div>

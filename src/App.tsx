@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Routes, Route, Link, useLocation } from "react-router-dom";
+import { Routes, Route, Link, useLocation, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "motion/react";
 import { 
   ShoppingBag, 
@@ -31,6 +31,9 @@ import EventDetail from "./components/EventDetail";
 import About from "./components/About";
 import ProductDetail from "./components/ProductDetail";
 
+// Services
+import { dataService } from "./services/dataService";
+
 // Motion Primitives
 import { TextSlide, Magnetic, Reveal, CinematicImage } from "./components/ui/motion";
 
@@ -45,94 +48,153 @@ const Home = () => {
     { id: 3, author: "Fatou B.", content: "Enfin une marque qui comprend les besoins des peaux melaninées.", rating: 5 }
   ]);
 
+  const [currentHeroImage, setCurrentHeroImage] = useState(0);
+  const heroImages = [
+    "https://images.unsplash.com/photo-1596462502278-27bfaf43399f?auto=format&fit=crop&q=80&w=2000",
+    "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&q=80&w=2000",
+    "https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&q=80&w=2000",
+    "https://images.unsplash.com/photo-1590156221122-c748e7898b0a?auto=format&fit=crop&q=80&w=2000"
+  ];
+
   useEffect(() => {
-    fetch("/api/products").then(res => res.json()).then(data => setBestSellers(data.slice(0, 4)));
-    fetch("/api/routines").then(res => res.json()).then(data => setRoutines(data.slice(0, 2)));
-    fetch("/api/events").then(res => res.json()).then(data => {
-      if (data.length > 0) setLatestEvent(data[0]);
-    });
+    const timer = setInterval(() => {
+      setCurrentHeroImage((prev) => (prev + 1) % heroImages.length);
+    }, 6000);
+    return () => clearInterval(timer);
+  }, []);
+
+  useEffect(() => {
+    const loadHomeData = async () => {
+      const prods = await dataService.getProducts();
+      setBestSellers(prods.slice(0, 4));
+      
+      const routs = await dataService.getRoutines();
+      setRoutines(routs.slice(0, 2));
+      
+      const evs = await dataService.getEvents();
+      if (evs.length > 0) setLatestEvent(evs[0]);
+    };
+    loadHomeData();
   }, []);
 
   return (
-    <div className="pt-20">
-      {/* Hero Section - UI LORA Style Cinematic Reveal */}
-      <section className="relative h-[95vh] overflow-hidden flex items-center justify-center bg-brand-ebony">
+    <div className="pt-0">
+      {/* Hero Section - Majestic Visuals */}
+      <section className="relative h-screen overflow-hidden flex items-center justify-center bg-brand-ebony">
         <div className="absolute inset-0 z-0">
-          <CinematicImage 
-            src="https://images.unsplash.com/photo-1596462502278-27bfaf43399f?auto=format&fit=crop&q=80&w=2000" 
-            alt="Cosmetics Hero"
-            className="w-full h-full rounded-none"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-brand-ebony via-brand-ebony/20 to-transparent" />
-        </div>
-        
-        <div className="relative z-10 text-center px-4 max-w-5xl">
-          <TextSlide delay={0.4} className="mb-4">
-            <p className="micro-label text-brand-gold tracking-[0.4em] uppercase">
-              L'empire de la beauté africaine
-            </p>
-          </TextSlide>
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={currentHeroImage}
+              initial={{ opacity: 0, scale: 1.1 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 1.05 }}
+              transition={{ duration: 2.5, ease: [0.16, 1, 0.3, 1] }}
+              className="absolute inset-0"
+            >
+              <CinematicImage 
+                src={heroImages[currentHeroImage]} 
+                alt="Cosmetics Hero"
+                className="w-full h-full object-cover rounded-none"
+              />
+            </motion.div>
+          </AnimatePresence>
+          <div className="absolute inset-0 bg-brand-ebony/40 backdrop-blur-[2px]" />
+          <div className="absolute inset-0 bg-gradient-to-b from-brand-ebony/60 via-transparent to-brand-ebony/80" />
           
-          <TextSlide delay={0.6} className="mb-8">
-            <h1 className="luxury-text text-6xl md:text-[10rem] font-light text-white leading-none tracking-tighter">
-              Précieuse Empire
-            </h1>
-          </TextSlide>
-
-          <Reveal delay={1} className="max-w-xl mx-auto mb-10">
-            <p className="text-lg text-brand-cream/60 font-medium">
-              Sublimez votre éclat naturel avec nos rituels d'exception inspirés des traditions ancestrales et de la science moderne.
-            </p>
-          </Reveal>
-
-          <Reveal delay={1.2}>
-            <Magnetic>
-              <Link 
-                to="/catalogue" 
-                className="btn-primary flex items-center justify-center gap-4 max-w-xs mx-auto py-5 px-10 rounded-full shadow-[0_0_40px_rgba(197,165,114,0.3)]"
-              >
-                DÉCOUVRIR NOS PRODUITS <ChevronRight size={20} />
-              </Link>
-            </Magnetic>
-          </Reveal>
+          {/* Hero Image Navigation Dots */}
+          <div className="absolute bottom-12 right-12 z-20 flex flex-col gap-4">
+             {heroImages.map((_, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => setCurrentHeroImage(idx)}
+                  className="group flex items-center gap-4 text-right"
+                >
+                  <span className={cn(
+                    "micro-label text-[8px] tracking-[0.3em] transition-all duration-500",
+                    currentHeroImage === idx ? "text-brand-gold opacity-100" : "text-white opacity-20 group-hover:opacity-60"
+                  )}>
+                    {String(idx + 1).padStart(2, '0')}
+                  </span>
+                  <div className={cn(
+                    "h-[1px] transition-all duration-700",
+                    currentHeroImage === idx ? "w-12 bg-brand-gold" : "w-4 bg-white/20 group-hover:w-8"
+                  )} />
+                </button>
+             ))}
+          </div>
         </div>
         
-        {/* Scroll Indicator - Forge UI Style */}
+        <div className="relative z-10 text-center px-6 max-w-5xl">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1.2, delay: 0.5, ease: [0.22, 1, 0.36, 1] }}
+          >
+            <span className="micro-label text-brand-gold text-[10px] sm:text-xs tracking-[0.8em] mb-12 block uppercase font-black drop-shadow-lg">
+              L'ART DE LA BEAUTÉ IMPÉRIALE
+            </span>
+            
+            <h1 className="luxury-text text-7xl sm:text-8xl md:text-9xl lg:text-[10rem] font-black text-white leading-[0.85] tracking-tighter mb-10 italic drop-shadow-2xl">
+              ÉCLAT <span className="text-brand-gold italic font-light block mt-4 drop-shadow-lg">RARE</span>
+            </h1>
+
+            <p className="text-brand-cream/80 text-lg sm:text-2xl font-light tracking-wide max-w-2xl mx-auto mb-16 leading-relaxed luxury-text italic drop-shadow-md">
+              L'excellence africaine au service de votre éclat naturel. Un rituel sacré, une perfection moderne.
+            </p>
+            
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-6 sm:gap-10">
+              <Magnetic>
+                <Link 
+                  to="/catalogue" 
+                  className="px-14 py-6 bg-brand-gold text-brand-ebony micro-label text-xs tracking-[0.4em] font-black hover:bg-white transition-all duration-500 rounded-full shadow-[0_20px_50px_rgba(197,161,107,0.4)] flex items-center gap-4"
+                >
+                  EXPLORER L'EMPIRE <ChevronRight size={18} />
+                </Link>
+              </Magnetic>
+              <Magnetic>
+                <Link 
+                  to="/routines" 
+                  className="px-14 py-6 bg-white/5 backdrop-blur-md border border-white/10 text-white micro-label text-xs tracking-[0.4em] font-black hover:bg-white/20 transition-all duration-500 rounded-full"
+                >
+                  VOS RITUELS
+                </Link>
+              </Magnetic>
+            </div>
+          </motion.div>
+        </div>
+        
+        {/* Scroll Indicator - Vengence UI Style */}
         <motion.div 
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 2 }}
-          className="absolute bottom-10 left-1/2 -translate-x-1/2"
+          transition={{ delay: 2.5 }}
+          className="absolute bottom-16 left-1/2 -translate-x-1/2 flex flex-col items-center gap-4"
         >
+          <span className="micro-label text-white/30 text-[8px] tracking-[0.8em]">SCROLL</span>
           <motion.div 
-            animate={{ y: [0, 10, 0] }}
-            transition={{ duration: 2, repeat: Infinity }}
-            className="w-px h-12 bg-white/20 relative"
-          >
-            <div className="absolute top-0 left-0 w-full h-1/2 bg-brand-gold" />
-          </motion.div>
+            animate={{ height: [0, 60, 0], y: [0, 20, 0] }}
+            transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
+            className="w-[2px] bg-brand-gold"
+          />
         </motion.div>
       </section>
 
-      {/* Reassurance Band - Forge UI Staggered Reveal */}
-      <section className="bg-white border-y border-brand-ink/5 py-16">
-        <div className="max-w-7xl mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-12">
+      {/* Reassurance Band - Forge UI Technical Grid */}
+      <section className="bg-brand-ebony py-32 border-y border-white/5">
+        <div className="max-w-7xl mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-20">
           {[
-            { tag: "Naturel", icon: "🌱", desc: "Produits 100% naturels" },
-            { tag: "Livraison", icon: "🚚", desc: "Express à Cotonou" },
-            { tag: "Paiement", icon: "💸", desc: "Mobile Money sécurisé" },
-            { tag: "Service", icon: "✨", desc: "Réactif & à l'écoute" },
+            { tag: "01. NATUREL", icon: <Sparkles size={24}/>, desc: "Ingrédients Purs" },
+            { tag: "02. LOGISTIQUE", icon: <ShoppingBag size={24}/>, desc: "Express Cotonou" },
+            { tag: "03. SÉCURITÉ", icon: <User size={24}/>, desc: "Transactions Chiffrées" },
+            { tag: "04. CONSEIL", icon: <MessageCircle size={24}/>, desc: "Experts Dédiés" },
           ].map((item, idx) => (
             <Reveal key={item.tag} delay={idx * 0.1}>
-              <div className="text-center group cursor-default">
-                <motion.div 
-                  whileHover={{ scale: 1.2, rotate: 5 }}
-                  className="text-4xl mb-4"
-                >
+              <div className="group cursor-default border-l border-white/5 pl-8 py-4 hover:border-brand-gold transition-colors duration-700">
+                <div className="text-brand-gold/60 mb-6 group-hover:text-brand-gold transition-colors group-hover:scale-110 transition-transform origin-left">
                   {item.icon}
-                </motion.div>
-                <h4 className="micro-label font-bold mb-2 tracking-widest">{item.tag}</h4>
-                <p className="text-[10px] opacity-40 uppercase tracking-[0.2em]">{item.desc}</p>
+                </div>
+                <h4 className="micro-label text-white mb-2 tracking-[0.4em]">{item.tag}</h4>
+                <p className="text-[11px] text-white/40 uppercase tracking-[0.3em] font-medium">{item.desc}</p>
               </div>
             </Reveal>
           ))}
@@ -362,14 +424,50 @@ const Home = () => {
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isVisible, setIsVisible] = useState(true);
+  const [lastScrollY, setLastScrollY] = useState(0);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [globalSearch, setGlobalSearch] = useState("");
   const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
-    const handleScroll = () => setIsScrolled(window.scrollY > 20);
-    window.addEventListener("scroll", handleScroll);
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      
+      // Scroll state for appearance (blur/bg)
+      setIsScrolled(currentScrollY > 20);
+      
+      // Visibility state (hide on scroll down, show on scroll up)
+      if (currentScrollY < 10) {
+        setIsVisible(true);
+      } else if (currentScrollY > lastScrollY && currentScrollY > 100) {
+        setIsVisible(false);
+      } else if (currentScrollY < lastScrollY) {
+        setIsVisible(true);
+      }
+      
+      setLastScrollY(currentScrollY);
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  }, [lastScrollY]);
+
+  useEffect(() => {
+    setIsMobileMenuOpen(false);
+    setIsSearchOpen(false);
+  }, [location]);
+
+  const handleGlobalSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (globalSearch.trim()) {
+      navigate(`/catalogue?q=${encodeURIComponent(globalSearch.trim())}`);
+      setIsSearchOpen(false);
+      setGlobalSearch("");
+    }
+  };
 
   const navLinks = [
     { name: "Accueil", path: "/" },
@@ -381,21 +479,27 @@ const Navbar = () => {
 
   return (
     <motion.nav 
-      initial={{ y: -100 }}
-      animate={{ y: 0 }}
-      transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
+      initial={{ y: -100, opacity: 0 }}
+      animate={{ y: isVisible ? 0 : -120, opacity: 1 }}
+      transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }} 
       className={cn(
-        "fixed top-0 left-0 right-0 z-50 transition-all duration-700 py-8 px-6",
-        isScrolled ? "bg-white/80 backdrop-blur-xl shadow-lg py-5 border-b border-brand-ebony/5" : "bg-transparent"
+        "fixed top-0 left-0 right-0 z-[100] transition-all duration-1000 px-6 sm:px-12",
+        isScrolled ? "py-4 sm:py-6" : "py-8 sm:py-12"
       )}
     >
-      <div className="max-w-7xl mx-auto flex items-center justify-between">
-        <Link to="/" className="luxury-text text-3xl font-black tracking-tighter text-brand-ebony group">
-          PRÉCIEUSE <span className="text-brand-gold transition-colors duration-500 group-hover:text-brand-ebony">EMPIRE</span>
+      <div className={cn(
+        "max-w-[1500px] mx-auto transition-all duration-1000 flex items-center justify-between px-10 sm:px-12 rounded-[2.5rem] relative group",
+        (isScrolled || location.pathname !== '/')
+          ? "bg-brand-ebony/95 backdrop-blur-3xl py-4 sm:py-5 border border-white/10 shadow-[0_40px_100px_-20px_rgba(0,0,0,0.6)]" 
+          : "bg-white/5 backdrop-blur-md py-6 sm:py-8 border border-white/5 hover:bg-white/10"
+      )}>
+        <Link to="/" className="flex flex-col items-start shrink-0">
+          <span className="luxury-text text-2xl sm:text-3xl font-black tracking-tighter text-white leading-none">PRÉCIEUSE</span>
+          <span className="micro-label text-brand-gold text-[7px] sm:text-[8px] tracking-[1em] mt-1">EMPIRE</span>
         </Link>
 
-        {/* Desktop Nav */}
-        <div className="hidden md:flex items-center gap-12">
+        {/* Desktop Nav - Majestic Center Links */}
+        <div className="hidden xl:flex items-center gap-8 2xl:gap-14">
           {navLinks.map((link, idx) => (
             <motion.div
               key={link.path}
@@ -406,32 +510,91 @@ const Navbar = () => {
               <Link 
                 to={link.path}
                 className={cn(
-                  "micro-label hover:text-brand-gold transition-all relative group tracking-[0.3em] font-bold py-2",
-                  location.pathname === link.path ? "text-brand-gold" : "text-brand-ebony"
+                  "micro-label transition-all relative group py-2 text-[10px] tracking-[0.4em] font-black whitespace-nowrap",
+                  location.pathname === link.path 
+                    ? "text-brand-gold" 
+                    : "text-white/40 hover:text-white"
                 )}
               >
-                {link.name}
+                {link.name.toUpperCase()}
                 <span className={cn(
-                  "absolute -bottom-1 left-1/2 -translate-x-1/2 w-0 h-1 bg-brand-gold rounded-full transition-all duration-500 group-hover:w-full",
-                  location.pathname === link.path && "w-1/2"
+                  "absolute -bottom-1 left-0 w-0 h-[1px] bg-brand-gold transition-all duration-700 ease-out group-hover:w-full",
+                  location.pathname === link.path && "w-full"
                 )} />
               </Link>
             </motion.div>
           ))}
         </div>
 
-        <div className="flex items-center gap-8">
-          <Magnetic><button className="text-brand-ebony hover:text-brand-gold transition-all"><Search size={22} strokeWidth={2.5}/></button></Magnetic>
-          <Magnetic><Link to="/favoris" className="text-brand-ebony hover:text-brand-gold transition-all"><Heart size={22} strokeWidth={2.5}/></Link></Magnetic>
-          <Magnetic><Link to="/admin" className="text-brand-ebony hover:text-brand-gold transition-all"><LayoutDashboard size={22} strokeWidth={2.5}/></Link></Magnetic>
+        <div className="flex items-center gap-3 sm:gap-6 shrink-0">
+          {[
+            { icon: <Search size={18} />, action: () => setIsSearchOpen(true), label: "RECHERCHE" },
+            { icon: <Heart size={18} />, path: "/favoris", label: "FAVORIS" },
+            { icon: <LayoutDashboard size={18} />, path: "/admin", label: "ADMIN" }
+          ].map((item, idx) => (
+            <Magnetic key={idx}>
+              <div className="relative group flex items-center">
+                {item.path ? (
+                  <Link to={item.path} className="text-white/70 hover:text-white transition-all p-2 sm:p-3 bg-white/5 rounded-full hover:bg-white/20">
+                    {item.icon}
+                  </Link>
+                ) : (
+                  <button onClick={item.action} className="text-white/70 hover:text-white transition-all border-none bg-white/5 p-2 sm:p-3 rounded-full hover:bg-white/20 cursor-pointer">
+                    {item.icon}
+                  </button>
+                )}
+                <span className="absolute -bottom-12 left-1/2 -translate-x-1/2 micro-label text-[7px] tracking-[0.2em] font-black text-brand-gold opacity-0 group-hover:opacity-100 transition-all bg-brand-ebony/90 backdrop-blur-xl px-3 py-2 rounded-lg whitespace-nowrap shadow-xl pointer-events-none border border-white/10 z-[110]">
+                  {item.label}
+                </span>
+              </div>
+            </Magnetic>
+          ))}
+          
           <button 
-            className="md:hidden text-brand-ebony" 
+            className="xl:hidden text-white bg-white/10 p-3 rounded-full hover:bg-white/20 transition-all ml-2" 
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           >
-            {isMobileMenuOpen ? <X size={28} /> : <Menu size={28} />}
+            {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
         </div>
       </div>
+
+      {/* Global Search Overlay */}
+      <AnimatePresence>
+        {isSearchOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[70] bg-brand-ebony/95 backdrop-blur-2xl flex items-center justify-center px-6"
+          >
+            <button 
+              onClick={() => setIsSearchOpen(false)}
+              className="absolute top-10 right-10 text-white hover:text-brand-gold transition-all p-4 border border-white/10 rounded-full"
+            >
+              <X size={32} />
+            </button>
+            <div className="max-w-4xl w-full">
+              <form onSubmit={handleGlobalSearch} className="relative">
+                <p className="micro-label text-brand-gold mb-6 tracking-[0.5em] text-center">QUE RECHERCHEZ-VOUS DANS L'EMPIRE ?</p>
+                <input 
+                  autoFocus
+                  type="text" 
+                  value={globalSearch}
+                  onChange={(e) => setGlobalSearch(e.target.value)}
+                  placeholder="Tapez un ingrédient, un éclat, un secret..."
+                  className="w-full bg-transparent border-b-2 border-white/10 text-4xl md:text-7xl luxury-text text-white py-8 focus:outline-none focus:border-brand-gold transition-all placeholder:opacity-10 text-center"
+                />
+                <div className="mt-8 flex justify-center">
+                   <button type="submit" className="micro-label text-white/40 hover:text-brand-gold transition-all flex items-center gap-4 group">
+                      APPUYEZ SUR ENTRÉE POUR RÉVÉLER <ChevronRight size={16} className="group-hover:translate-x-2 transition-all"/>
+                   </button>
+                </div>
+              </form>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Mobile Menu */}
       <AnimatePresence>
@@ -440,35 +603,43 @@ const Navbar = () => {
             initial={{ opacity: 0, x: "100%" }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: "100%" }}
-            transition={{ type: "spring", damping: 25, stiffness: 200 }}
-            className="fixed inset-y-0 right-0 w-full md:hidden bg-brand-ebony z-[60] overflow-hidden flex flex-col"
+            transition={{ type: "spring", damping: 30, stiffness: 200 }}
+            className="fixed inset-0 bg-brand-ebony z-[200] flex flex-col p-12"
           >
-            <div className="p-10 flex justify-between items-center">
-               <span className="luxury-text text-white text-2xl">MENU</span>
-               <button onClick={() => setIsMobileMenuOpen(false)} className="text-white border border-white/20 p-4 rounded-full"><X size={32}/></button>
+            <div className="flex justify-between items-center mb-24">
+               <span className="luxury-text text-white text-3xl font-black">PRÉCIEUSE <span className="text-brand-gold">EMPIRE</span></span>
+               <button onClick={() => setIsMobileMenuOpen(false)} className="text-white bg-white/10 p-5 rounded-full"><X size={32}/></button>
             </div>
-            <div className="flex-1 flex flex-col justify-center px-10 gap-12">
+            
+            <div className="flex flex-col gap-8">
               {navLinks.map((link, idx) => (
                 <motion.div
                   key={link.path}
                   initial={{ opacity: 0, x: 50 }}
                   animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.1 * idx }}
+                  transition={{ delay: 0.1 * idx + 0.3 }}
                 >
                   <Link 
-                    key={link.path}
                     to={link.path} 
                     onClick={() => setIsMobileMenuOpen(false)}
-                    className="luxury-text text-5xl text-white hover:text-brand-gold transition-colors inline-block"
+                    className="luxury-text text-5xl text-white hover:text-brand-gold transition-colors inline-block uppercase"
                   >
                     {link.name}
                   </Link>
                 </motion.div>
               ))}
             </div>
-            <div className="p-10 border-t border-white/5 opacity-50 flex items-center justify-between">
-               <p className="micro-label text-white tracking-widest text-[10px]">PRÉCIEUSE EMPIRE OFFICIAL</p>
-               <Instagram className="text-white" size={24}/>
+            
+            <div className="mt-auto pt-16 border-t border-white/10 flex flex-col gap-10">
+               <div>
+                  <p className="micro-label text-brand-gold mb-4">L'EXCELLENCE AFRICAINE</p>
+                  <p className="text-white/40 text-xs leading-relaxed max-w-xs">Sublimez votre éclat naturel avec nos rituels d'exception inspirés des traditions ancestrales.</p>
+               </div>
+               <div className="flex gap-8">
+                  <Instagram className="text-white/40 hover:text-brand-gold cursor-pointer" size={24}/>
+                  <Facebook className="text-white/40 hover:text-brand-gold cursor-pointer" size={24}/>
+                  <MessageCircle className="text-white/40 hover:text-brand-gold cursor-pointer" size={24}/>
+               </div>
             </div>
           </motion.div>
         )}
@@ -509,7 +680,7 @@ const PromoPopup = () => {
             initial={{ scale: 0.9, y: 20 }}
             animate={{ scale: 1, y: 0 }}
             exit={{ scale: 0.9, y: 20 }}
-            className="bg-ui-dark text-brand-cream max-w-2xl w-full rounded-[3rem] overflow-hidden shadow-2xl relative flex flex-col md:flex-row border border-ui-border"
+            className="bg-brand-ebony text-brand-cream max-w-2xl w-full rounded-[3rem] overflow-hidden shadow-2xl relative flex flex-col md:flex-row border border-white/10"
           >
             <button 
               onClick={closePopup}

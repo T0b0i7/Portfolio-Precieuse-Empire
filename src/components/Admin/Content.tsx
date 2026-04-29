@@ -18,12 +18,14 @@ import {
 import { cn } from '../../lib/utils';
 import { toast } from 'react-hot-toast';
 
+import { dataService, Routine } from '../../services/dataService';
+
 export function AdminContent() {
-  const [activeType, setActiveType] = useState<'article' | 'promo' | 'routine'>('article');
-  const [items, setItems] = useState<any[]>([]);
+  const [activeType, setActiveType] = useState<'article' | 'promo' | 'routine'>('routine');
+  const [items, setItems] = useState<Routine[]>([]);
   const [loading, setLoading] = useState(true);
   const [isFormOpen, setIsFormOpen] = useState(false);
-  const [editingItem, setEditingItem] = useState<any>(null);
+  const [editingItem, setEditingItem] = useState<Routine | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Form states
@@ -32,11 +34,8 @@ export function AdminContent() {
     excerpt: '',
     content: '',
     image: 'https://images.unsplash.com/photo-1596755094514-f87e34085b2c?auto=format&fit=crop&q=80&w=800',
-    status: 'published',
     category: '',
-    type: 'article',
-    planned_at: '',
-    linked_products: [] as number[]
+    product_ids: '[]'
   });
 
   const [sortBy, setSortBy] = useState<'title' | 'date'>('title');
@@ -49,9 +48,12 @@ export function AdminContent() {
   const fetchContent = async () => {
     setLoading(true);
     try {
-      const res = await fetch('/api/routines'); 
-      const data = await res.json();
-      setItems(data.filter((i: any) => i.type === activeType || (!i.type && activeType === 'article'))); 
+      if (activeType === 'routine') {
+        const data = await dataService.getRoutines();
+        setItems(data);
+      } else {
+        setItems([]);
+      }
     } catch (error) {
       toast.error('Erreur lors du chargement des contenus');
     } finally {
@@ -74,22 +76,18 @@ export function AdminContent() {
   const sortedItems = [...items].sort((a, b) => {
     let comparison = 0;
     if (sortBy === 'title') comparison = a.title.localeCompare(b.title);
-    if (sortBy === 'date') comparison = new Date(a.created_at || 0).getTime() - new Date(b.created_at || 0).getTime();
     return sortOrder === 'asc' ? comparison : -comparison;
   });
 
-  const handleEdit = (item: any) => {
+  const handleEdit = (item: Routine) => {
     setEditingItem(item);
     setFormData({
       title: item.title,
       excerpt: item.excerpt || '',
       content: item.content || '',
       image: item.image,
-      status: item.status,
       category: item.category || '',
-      type: item.type || activeType,
-      planned_at: item.planned_at || '',
-      linked_products: item.linked_products || []
+      product_ids: item.product_ids || '[]'
     });
     setIsFormOpen(true);
   };
@@ -101,13 +99,23 @@ export function AdminContent() {
       excerpt: '',
       content: '',
       image: 'https://images.unsplash.com/photo-1596755094514-f87e34085b2c?auto=format&fit=crop&q=80&w=800',
-      status: 'published',
       category: '',
-      type: activeType,
-      planned_at: '',
-      linked_products: []
+      product_ids: '[]'
     });
     setIsFormOpen(true);
+  };
+
+  const handleDelete = async (id: string) => {
+    if (!confirm('Supprimer ce contenu ?')) return;
+    try {
+      if (activeType === 'routine') {
+        await dataService.deleteRoutine(id);
+        toast.success('Contenu supprimé');
+        fetchContent();
+      }
+    } catch (error) {
+      toast.error('Erreur');
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -115,24 +123,23 @@ export function AdminContent() {
     setIsSubmitting(true);
 
     try {
-      const url = editingItem ? `/api/admin/content/${editingItem.id}` : '/api/admin/content';
-      const method = editingItem ? 'PATCH' : 'POST';
-
-      const res = await fetch(url, {
-        method,
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
-      });
-
-      if (res.ok) {
-        toast.success(editingItem ? 'Contenu mis à jour' : 'Contenu créé avec succès');
-        setIsFormOpen(false);
-        fetchContent();
-      } else {
-        toast.error('Erreur lors de l\'enregistrement');
+      if (activeType === 'routine') {
+        if (editingItem) {
+          await dataService.updateRoutine(editingItem.id, formData);
+          toast.success('Rituel mis à jour');
+        } else {
+          await dataService.addRoutine({
+            ...formData,
+            id: formData.title.toLowerCase().replace(/\s+/g, '-') + '-' + Date.now(),
+            date: new Date().toLocaleDateString('fr-FR')
+          } as Routine);
+          toast.success('Rituel créé avec succès');
+        }
       }
+      setIsFormOpen(false);
+      fetchContent();
     } catch (error) {
-      toast.error('Erreur serveur');
+      toast.error('Erreur technique');
     } finally {
       setIsSubmitting(false);
     }
@@ -233,7 +240,12 @@ export function AdminContent() {
                     >
                       <Edit2 size={16} />
                     </button>
-                    <button className="p-2 hover:bg-red-50 rounded-lg text-black/20 hover:text-red-500 transition-all"><Trash2 size={16} /></button>
+                    <button 
+                      onClick={() => handleDelete(item.id)}
+                      className="p-2 hover:bg-red-50 rounded-lg text-black/20 hover:text-red-500 transition-all"
+                    >
+                      <Trash2 size={16} />
+                    </button>
                  </div>
               </div>
               <h3 className="font-bold text-lg mb-2 truncate group-hover:text-brand-gold transition-colors">{item.title}</h3>

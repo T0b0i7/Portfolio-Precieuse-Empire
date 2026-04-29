@@ -5,28 +5,12 @@ import { ChevronLeft, MessageCircle, Share2, Facebook, Twitter, Clock, Sparkles,
 import { cn } from "@/src/lib/utils";
 import { toast } from "react-hot-toast";
 
+import { dataService, Routine, Product } from "../services/dataService";
+
 interface RoutineStep {
   title: string;
   description: string;
-  productId: number | null;
-}
-
-interface Routine {
-  id: number;
-  title: string;
-  excerpt: string;
-  content: string; // JSON string
-  image: string;
-  category: string;
-  date: string;
-  product_ids: string; // JSON string
-}
-
-interface Product {
-  id: number;
-  name: string;
-  price: number;
-  main_image: string;
+  productId: string | null;
 }
 
 export default function RoutineDetail() {
@@ -40,19 +24,20 @@ export default function RoutineDetail() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [routinesRes, productsRes] = await Promise.all([
-          fetch("/api/routines").then(res => res.json()),
-          fetch("/api/products").then(res => res.json())
+        if (!id) return;
+        const [routines, products] = await Promise.all([
+          dataService.getRoutines(),
+          dataService.getProducts()
         ]);
 
-        const found = routinesRes.find((r: Routine) => r.id === Number(id));
+        const found = routines.find((r: Routine) => r.id === id);
         if (found) {
           setRoutine(found);
           const content = JSON.parse(found.content);
           setParsedContent(content);
           
           const pIds = JSON.parse(found.product_ids || "[]");
-          const recs = productsRes.filter((p: Product) => pIds.includes(p.id));
+          const recs = products.filter((p: Product) => pIds.includes(p.id));
           setRecommendedProducts(recs);
         } else {
           navigate("/routines");

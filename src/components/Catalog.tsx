@@ -1,58 +1,53 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { Search, Filter, ShoppingBag, Heart, Eye, X, ChevronRight } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import { cn } from "../lib/utils";
 import { TextSlide, Magnetic, Reveal, CinematicImage } from "./ui/motion";
 
-interface Product {
-  id: number;
-  name: string;
-  description: string;
-  long_description: string;
-  price: number;
-  category: string;
-  skin_type: string;
-  main_image: string;
-  gallery: string[];
-  badges: string[];
-  stock_status: string;
-}
+// Services
+import { dataService, Product } from "../services/dataService";
 
 export default function Catalog() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState(searchParams.get("q") || "");
   const [selectedCategory, setSelectedCategory] = useState("Tous");
   const [selectedSkinType, setSelectedSkinType] = useState("Tous");
-  const [selectedBadge, setSelectedBadge] = useState("Tous");
   const [sortBy, setSortBy] = useState("nouveautes");
   const [maxPriceFilter, setMaxPriceFilter] = useState(100000);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-  const [wishlist, setWishlist] = useState<number[]>([]);
+  const [wishlist, setWishlist] = useState<string[]>([]);
 
   useEffect(() => {
-    fetch("/api/products")
-      .then(res => res.json())
-      .then(data => {
-        setProducts(data);
-        if (data.length > 0) {
-          const highestPrice = Math.max(...data.map((p: Product) => p.price));
-          setMaxPriceFilter(highestPrice);
-        }
-      })
-      .finally(() => {
-        // Simulate a slightly longer loading for luxury feel (skeleton demo)
-        setTimeout(() => setLoading(false), 800);
-      });
+    const q = searchParams.get("q");
+    if (q) {
+      setSearchQuery(q);
+    }
+  }, [searchParams]);
+
+  useEffect(() => {
+    const loadProducts = async () => {
+      const data = await dataService.getProducts();
+      setProducts(data);
+      if (data.length > 0) {
+        const highestPrice = Math.max(...data.map((p: Product) => p.price));
+        setMaxPriceFilter(highestPrice);
+      }
+      // Simulate a slightly longer loading for luxury feel (skeleton demo)
+      setTimeout(() => setLoading(false), 800);
+    };
+    
+    loadProducts();
 
     const saved = localStorage.getItem("wishlist");
     if (saved) setWishlist(JSON.parse(saved));
   }, []);
 
-  const toggleWishlist = (id: number) => {
+  const toggleWishlist = (id: string) => {
     const newWishlist = wishlist.includes(id)
       ? wishlist.filter(i => i !== id)
       : [...wishlist, id];
@@ -63,9 +58,8 @@ export default function Catalog() {
     });
   };
 
-  const categories = ["Tous", "Soins visage", "Corps", "Maquillage", "Parfums", "Cheveux"];
+  const categories = ["Tous", "visage", "corps", "maquillage", "accessoires"];
   const skinTypes = ["Tous", "Grasse", "Sèche", "Mixte", "Sensible", "Normale"];
-  const badges = ["Tous", "Nouveau", "Promo", "Best-seller"];
 
   const [displayLimit, setDisplayLimit] = useState(8);
 
@@ -74,16 +68,13 @@ export default function Catalog() {
       const matchesSearch = p.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
                            (p.description || '').toLowerCase().includes(searchQuery.toLowerCase());
       const matchesCategory = selectedCategory === "Tous" || p.category === selectedCategory;
-      const matchesSkin = selectedSkinType === "Tous" || p.skin_type === selectedSkinType;
-      const matchesBadge = selectedBadge === "Tous" || (p.badges || []).includes(selectedBadge);
       const matchesPrice = p.price <= maxPriceFilter;
-      return matchesSearch && matchesCategory && matchesSkin && matchesBadge && matchesPrice;
+      return matchesSearch && matchesCategory && matchesPrice;
     })
     .sort((a, b) => {
       if (sortBy === "prix-asc") return a.price - b.price;
       if (sortBy === "prix-desc") return b.price - a.price;
-      if (sortBy === "popularite") return b.id - a.id; // Mock popularity with ID
-      return b.id - a.id; // Nouveautés
+      return 0;
     });
 
   const sendWhatsAppMessage = (product: Product) => {
@@ -94,90 +85,74 @@ export default function Catalog() {
   return (
     <div className="pt-40 pb-32 px-6 max-w-7xl mx-auto min-h-screen">
       {/* Header & Instant Search - UI Lora Style */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-12 mb-20">
-        <div>
-          <TextSlide className="mb-2">
-            <p className="micro-label text-brand-gold tracking-[0.4em] uppercase">Catalogue Impérial</p>
+      <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-16 mb-32">
+        <div className="max-w-2xl">
+          <TextSlide className="mb-4">
+            <p className="micro-label text-brand-gold tracking-[0.8em] uppercase font-bold">L'ARCHIVE DES SECRETS</p>
           </TextSlide>
-          <TextSlide delay={0.2} className="mb-6">
-            <h1 className="luxury-text text-6xl md:text-8xl font-light text-brand-ebony leading-[0.9]">Sublimez-vous.</h1>
+          <TextSlide delay={0.2} className="mb-8">
+            <h1 className="luxury-text text-7xl md:text-[8rem] font-black text-brand-ebony leading-none tracking-tighter">ÉCLAT PUR.</h1>
           </TextSlide>
-          <Reveal delay={0.4}>
-            <p className="text-xl text-ui-muted font-medium max-w-md leading-relaxed opacity-60">L'excellence de la cosmétique africaine, formulée pour révéler votre éclat naturel.</p>
+          <Reveal delay={0.4} className="border-l-2 border-brand-gold/20 pl-10">
+            <p className="text-xl text-ui-muted font-medium leading-relaxed opacity-60 italic">L'excellence de la cosmétique africaine, formulée pour révéler l'empire qui sommeille en vous.</p>
           </Reveal>
         </div>
         
-        <Reveal delay={0.6} className="relative w-full md:w-[450px] group">
-          <Search className="absolute left-8 top-1/2 -translate-y-1/2 opacity-20 group-focus-within:opacity-100 group-focus-within:text-brand-gold transition-all" size={24} />
+        <Reveal delay={0.6} className="relative w-full lg:w-[550px] group">
+          <div className="absolute inset-0 bg-brand-gold/5 blur-3xl rounded-full scale-150 opacity-0 group-focus-within:opacity-100 transition-opacity duration-1000" />
+          <Search className="absolute left-10 top-1/2 -translate-y-1/2 opacity-20 group-focus-within:opacity-100 group-focus-within:text-brand-gold transition-all" size={28} />
           <input 
             type="text" 
-            placeholder="Rechercher un secret..." 
-            className="w-full bg-white border border-brand-ink/5 shadow-2xl rounded-full py-6 px-20 focus:ring-4 focus:ring-brand-gold/10 outline-none text-lg transition-all placeholder:opacity-30"
+            placeholder="RECHERCHER DANS L'ARCHIVE..." 
+            className="w-full bg-brand-ebony/5 border-b-2 border-brand-ebony/10 py-10 px-24 focus:border-brand-gold outline-none text-2xl luxury-text transition-all placeholder:opacity-20 placeholder:uppercase"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
         </Reveal>
       </div>
 
-      {/* Sticky Filter Bar - Forge UI Style */}
-      <div className="sticky top-28 z-40 bg-brand-cream/60 backdrop-blur-3xl py-6 mb-24 border-b border-brand-ink/5 overflow-x-auto no-scrollbar">
-        <div className="flex flex-wrap md:flex-nowrap items-center gap-12 min-w-max px-4">
-          {/* Categories */}
-          <div className="flex items-center gap-6 border-r border-brand-ink/10 pr-12">
-            <Filter size={18} className="text-brand-gold" />
-            <div className="flex gap-3">
-              {categories.map(cat => (
-                <button
-                  key={cat}
-                  onClick={() => setSelectedCategory(cat)}
-                  className={cn(
-                    "px-6 py-2 rounded-full text-[10px] uppercase tracking-[0.2em] transition-all font-bold cursor-pointer",
-                    selectedCategory === cat 
-                      ? "bg-brand-gold text-brand-ebony shadow-lg" 
-                      : "bg-brand-ebony/5 text-brand-ebony/60 hover:bg-brand-ebony/10"
-                  )}
-                >
-                  {cat}
-                </button>
-              ))}
-            </div>
+      {/* Sticky Filter Bar - Luxury Style */}
+      <div className="sticky top-12 z-40 px-6 max-w-7xl mx-auto mb-20">
+        <div className="glass-card py-4 px-10 flex items-center justify-between overflow-x-auto no-scrollbar shadow-premium">
+          <div className="flex items-center gap-12 min-w-max">
+            <span className="micro-label text-brand-ebony/40">FILTRER PAR</span>
+             <div className="flex gap-4">
+                {categories.map(cat => (
+                  <button
+                    key={cat}
+                    onClick={() => setSelectedCategory(cat)}
+                    className={cn(
+                      "px-8 py-3 rounded-full text-[10px] uppercase tracking-[0.2em] transition-all font-bold cursor-pointer border",
+                      selectedCategory === cat 
+                        ? "bg-brand-gold border-brand-gold text-brand-ebony shadow-lg" 
+                        : "border-brand-ebony/10 text-brand-ebony/40 hover:text-brand-ebony"
+                    )}
+                  >
+                    {cat}
+                  </button>
+                ))}
+             </div>
           </div>
+          
+          <div className="h-10 w-px bg-white/10" />
 
-          {/* Skin Types */}
-          <div className="flex items-center gap-6 border-r border-brand-ink/10 pr-12">
-            <span className="micro-label opacity-40 font-bold tracking-widest">PEAU :</span>
-            <div className="flex gap-3">
-              {skinTypes.map(type => (
-                <button
-                  key={type}
-                  onClick={() => setSelectedSkinType(type)}
-                  className={cn(
-                    "px-5 py-2 rounded-xl text-[10px] transition-all font-bold tracking-wider",
-                    selectedSkinType === type 
-                      ? "bg-brand-ebony text-white shadow-xl" 
-                      : "bg-brand-ink/5 text-brand-ink/60 hover:bg-brand-ink/10"
-                  )}
-                >
-                  {type}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Sorting */}
-          <div className="flex items-center gap-6">
-            <span className="micro-label opacity-40 font-bold tracking-widest">TRI :</span>
+          <div className="flex items-center gap-10">
+            <span className="micro-label text-white/30 tracking-[0.5em] font-black">TRIER :</span>
             <select 
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
-              className="bg-transparent text-[10px] uppercase tracking-[0.2em] font-black outline-none cursor-pointer text-brand-gold"
+              className="bg-transparent text-[10px] uppercase tracking-[0.3em] font-black outline-none cursor-pointer text-brand-gold border-none"
             >
-              <option value="nouveautes">Nouveautés</option>
-              <option value="prix-asc">Prix Croissant</option>
-              <option value="prix-desc">Prix Décroissant</option>
-              <option value="popularite">Popularité</option>
+              <option value="nouveautes" className="bg-brand-ebony">NOUVEAUTÉS</option>
+              <option value="prix-asc" className="bg-brand-ebony">PRIX CROISSANT</option>
+              <option value="prix-desc" className="bg-brand-ebony">PRIX DÉCROISSANT</option>
+              <option value="popularite" className="bg-brand-ebony">POPULARITÉ</option>
             </select>
           </div>
+        </div>
+        
+        <div className="hidden lg:flex items-center gap-4 ml-16 text-white/20">
+           <span className="micro-label uppercase text-[8px] tracking-[1em]">{filteredProducts.length} ARTICLES RÉVÉLÉS</span>
         </div>
       </div>
 
@@ -211,39 +186,34 @@ export default function Catalog() {
                         />
                         
                         <div className="absolute top-8 left-8 flex flex-col gap-3">
-                          {(p.badges || []).map(badge => (
+                          {p.is_bestseller && (
                             <motion.span 
-                              key={badge} 
                               initial={{ x: -20, opacity: 0 }}
                               animate={{ x: 0, opacity: 1 }}
-                              className={cn(
-                                "px-5 py-2 rounded-full micro-label text-[9px] backdrop-blur-xl text-white shadow-2xl font-black tracking-widest",
-                                badge === 'Nouveau' ? "bg-brand-gold/60" : 
-                                badge === 'Promo' ? "bg-brand-rose/60" : "bg-brand-ebony/60"
-                              )}
+                              className="px-6 py-2 rounded-full micro-label text-[8px] bg-brand-cream/90 backdrop-blur-md text-brand-ebony shadow-lg font-black tracking-widest"
                             >
-                              {badge}
+                              BEST-SELLER
                             </motion.span>
-                          ))}
+                          )}
                         </div>
 
                         <button 
                           onClick={(e) => { e.stopPropagation(); toggleWishlist(p.id); }}
-                          className="absolute top-8 right-8 p-5 rounded-full bg-white/20 backdrop-blur-xl opacity-0 scale-90 group-hover:opacity-100 group-hover:scale-100 transition-all hover:bg-white text-brand-ebony shadow-2xl"
+                          className="absolute top-8 right-8 p-5 rounded-full bg-white/10 backdrop-blur-xl opacity-0 scale-90 group-hover:opacity-100 group-hover:scale-100 transition-all hover:bg-brand-gold text-white hover:text-brand-ebony shadow-2xl"
                         >
                           <Heart size={22} className={cn(wishlist.includes(p.id) && "fill-brand-gold text-brand-gold")} />
                         </button>
 
-                        <div className="absolute inset-x-0 bottom-0 p-8 translate-y-20 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-700 bg-gradient-to-t from-brand-ebony/90 via-brand-ebony/40 to-transparent flex flex-col gap-4">
+                        <div className="absolute inset-x-0 bottom-0 p-8 translate-y-10 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-700 bg-gradient-to-t from-brand-ebony/60 to-transparent flex flex-col gap-3">
                            <button 
                              onClick={(e) => { e.stopPropagation(); setSelectedProduct(p); }}
-                             className="w-full bg-white text-brand-ebony py-4 rounded-2x; micro-label flex items-center justify-center gap-3 hover:bg-brand-gold hover:text-brand-ebony transition-all font-black rounded-2xl"
+                             className="w-full bg-white text-brand-ebony py-4 rounded-full micro-label flex items-center justify-center gap-3 hover:bg-brand-gold hover:text-brand-ebony transition-all font-bold"
                            >
                               APERÇU RAPIDE <Eye size={18}/>
                            </button>
                            <button 
                              onClick={(e) => { e.stopPropagation(); sendWhatsAppMessage(p); }}
-                             className="w-full bg-[#25D366] text-white py-4 rounded-2xl micro-label flex items-center justify-center gap-3 hover:brightness-110 transition-all shadow-2xl font-black"
+                             className="w-full bg-brand-gold text-brand-ebony py-4 rounded-full micro-label flex items-center justify-center gap-3 hover:bg-brand-gold-muted transition-all shadow-xl font-bold"
                            >
                               COMMANDER <ShoppingBag size={18}/>
                            </button>
@@ -329,7 +299,6 @@ export default function Catalog() {
                     </TextSlide>
                     <Reveal delay={0.2} className="flex items-center gap-6 mb-12">
                       <p className="text-4xl font-light text-brand-gold">{selectedProduct.price.toLocaleString()} FCFA</p>
-                      <span className="px-6 py-2 rounded-full border border-white/10 text-[10px] uppercase font-black text-brand-gold/60 tracking-widest">{selectedProduct.skin_type}</span>
                     </Reveal>
                     <Reveal delay={0.3}>
                       <p className="text-brand-cream/60 text-xl leading-relaxed font-light">{selectedProduct.description}</p>

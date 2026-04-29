@@ -6,19 +6,7 @@ import { toast } from "react-hot-toast";
 import { cn } from "../lib/utils";
 import { TextSlide, Magnetic, Reveal, CinematicImage } from "./ui/motion";
 
-interface Product {
-  id: number;
-  name: string;
-  description: string;
-  long_description: string;
-  price: number;
-  category: string;
-  skin_type: string;
-  main_image: string;
-  gallery: string[];
-  badges: string[];
-  stock_status: string;
-}
+import { dataService, Product } from "../services/dataService";
 
 export default function ProductDetail() {
   const { id } = useParams();
@@ -29,27 +17,30 @@ export default function ProductDetail() {
   const [activeImage, setActiveImage] = useState(0);
   const [isFavorite, setIsFavorite] = useState(false);
 
-  const [showShareMenu, setShowShareMenu] = useState(false);
-
   useEffect(() => {
-    setLoading(true);
-    // Fetch product
-    fetch(`/api/products`)
-      .then(res => res.json())
-      .then(data => {
-        const found = data.find((p: Product) => p.id === Number(id));
+    const loadProduct = async () => {
+      setLoading(true);
+      try {
+        if (!id) return;
+        const products = await dataService.getProducts();
+        const found = products.find((p: Product) => p.id === id);
         if (found) {
           setProduct(found);
-          setSimilarProducts(data.filter((p: Product) => p.category === found.category && p.id !== found.id).slice(0, 4));
+          setSimilarProducts(products.filter((p: Product) => p.category === found.category && p.id !== found.id).slice(0, 4));
           
           const wishlist = JSON.parse(localStorage.getItem("wishlist") || "[]");
           setIsFavorite(wishlist.includes(found.id));
         } else {
           navigate("/catalogue");
         }
-      })
-      .finally(() => setLoading(false));
+      } catch (error) {
+        toast.error("Erreur de chargement");
+      } finally {
+        setLoading(false);
+      }
+    };
     
+    loadProduct();
     window.scrollTo(0, 0);
   }, [id, navigate]);
 
@@ -58,7 +49,7 @@ export default function ProductDetail() {
     const wishlist = JSON.parse(localStorage.getItem("wishlist") || "[]");
     let newWishlist;
     if (isFavorite) {
-      newWishlist = wishlist.filter((item: number) => item !== product.id);
+      newWishlist = wishlist.filter((item: string) => item !== product.id);
       toast.success("Retiré des favoris");
     } else {
       newWishlist = [...wishlist, product.id];

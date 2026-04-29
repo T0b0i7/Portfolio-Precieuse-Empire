@@ -16,13 +16,14 @@ import {
 import { cn } from '../../lib/utils';
 import { toast } from 'react-hot-toast';
 
+import { dataService } from '../../services/dataService';
+
 export function AdminDashboard({ user }: { user: any }) {
   const [stats, setStats] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch('/api/admin/stats')
-      .then(res => res.json())
+    dataService.getStats()
       .then(data => {
         setStats(data);
         setLoading(false);

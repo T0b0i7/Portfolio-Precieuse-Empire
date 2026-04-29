@@ -19,32 +19,31 @@ import {
 import { cn } from '../../lib/utils';
 import { toast } from 'react-hot-toast';
 
+import { dataService, Product } from '../../services/dataService';
+
 export function AdminProducts({ searchQuery: globalSearch }: { searchQuery?: string }) {
-  const [products, setProducts] = useState<any[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
 
   const activeSearch = globalSearch || searchQuery;
   const [selectedCategory, setSelectedCategory] = useState('all');
-  const [sortBy, setSortBy] = useState<'name' | 'price' | 'stock'>('name');
+  const [sortBy, setSortBy] = useState<'name' | 'price'>('name');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
   const [isFormOpen, setIsFormOpen] = useState(false);
-  const [editingProduct, setEditingProduct] = useState<any>(null);
+  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Form states
   const [formData, setFormData] = useState({
     name: '',
-    short_desc: '',
-    long_description: '',
+    description: '',
     price: 0,
-    category: 'Soins visage',
-    skin_type: 'Tous types',
-    stock: 0,
-    status: 'visible',
-    badges: [] as string[],
+    category: 'visage' as any,
+    main_image: '',
     images: [] as string[],
-    planned_at: ''
+    features: [] as string[],
+    is_bestseller: false
   });
 
   useEffect(() => {
@@ -54,8 +53,7 @@ export function AdminProducts({ searchQuery: globalSearch }: { searchQuery?: str
   const fetchProducts = async () => {
     setLoading(true);
     try {
-      const res = await fetch('/api/products');
-      const data = await res.json();
+      const data = await dataService.getProducts();
       setProducts(data);
     } catch (error) {
       toast.error('Erreur lors du chargement des produits');
@@ -64,20 +62,17 @@ export function AdminProducts({ searchQuery: globalSearch }: { searchQuery?: str
     }
   };
 
-  const handleEdit = (product: any) => {
+  const handleEdit = (product: Product) => {
     setEditingProduct(product);
     setFormData({
       name: product.name,
-      short_desc: product.short_desc || '',
-      long_description: product.long_description || '',
+      description: product.description,
       price: product.price,
       category: product.category,
-      skin_type: product.skin_type || 'Tous types',
-      stock: product.stock,
-      status: product.status,
-      badges: product.badges || [],
-      images: product.images || [product.image || ''],
-      planned_at: product.planned_at || ''
+      main_image: product.main_image,
+      images: product.images || [],
+      features: product.features || [],
+      is_bestseller: product.is_bestseller || false
     });
     setIsFormOpen(true);
   };
@@ -86,28 +81,23 @@ export function AdminProducts({ searchQuery: globalSearch }: { searchQuery?: str
     setEditingProduct(null);
     setFormData({
       name: '',
-      short_desc: '',
-      long_description: '',
+      description: '',
       price: 0,
-      category: 'Soins visage',
-      skin_type: 'Tous types',
-      stock: 0,
-      status: 'visible',
-      badges: [],
+      category: 'visage',
+      main_image: '',
       images: [],
-      planned_at: ''
+      features: [],
+      is_bestseller: false
     });
     setIsFormOpen(true);
   };
 
-  const handleDelete = async (id: number) => {
+  const handleDelete = async (id: string) => {
     if (!confirm('Êtes-vous sûr de vouloir supprimer ce produit impérial ?')) return;
     try {
-      const res = await fetch(`/api/admin/products/${id}`, { method: 'DELETE' });
-      if (res.ok) {
-        toast.success('Produit supprimé');
-        fetchProducts();
-      }
+      await dataService.deleteProduct(id);
+      toast.success('Produit supprimé');
+      fetchProducts();
     } catch (error) {
       toast.error('Erreur lors de la suppression');
     }
@@ -141,20 +131,20 @@ export function AdminProducts({ searchQuery: globalSearch }: { searchQuery?: str
     e.preventDefault();
     setIsSubmitting(true);
     try {
-      const url = editingProduct ? `/api/admin/products/${editingProduct.id}` : '/api/admin/products';
-      const method = editingProduct ? 'PATCH' : 'POST';
-      const res = await fetch(url, {
-        method,
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
-      });
-      if (res.ok) {
-        toast.success(editingProduct ? 'Produit mis à jour' : 'Produit ajouté au palais');
-        setIsFormOpen(false);
-        fetchProducts();
+      if (editingProduct) {
+        await dataService.updateProduct(editingProduct.id, formData);
+        toast.success('Produit mis à jour');
+      } else {
+        await dataService.addProduct({
+          ...formData,
+          id: formData.name.toLowerCase().replace(/\s+/g, '-') + '-' + Date.now(),
+        } as Product);
+        toast.success('Produit ajouté au palais');
       }
+      setIsFormOpen(false);
+      fetchProducts();
     } catch (error) {
-      toast.error('Erreur serveur');
+      toast.error('Erreur technique');
     } finally {
       setIsSubmitting(false);
     }
@@ -168,7 +158,6 @@ export function AdminProducts({ searchQuery: globalSearch }: { searchQuery?: str
     let comparison = 0;
     if (sortBy === 'name') comparison = a.name.localeCompare(b.name);
     if (sortBy === 'price') comparison = a.price - b.price;
-    if (sortBy === 'stock') comparison = a.stock - b.stock;
     return sortOrder === 'asc' ? comparison : -comparison;
   });
 
@@ -206,7 +195,6 @@ export function AdminProducts({ searchQuery: globalSearch }: { searchQuery?: str
           >
             <option value="name">Trier par Nom</option>
             <option value="price">Trier par Prix</option>
-            <option value="stock">Trier par Stock</option>
           </select>
           <button 
             onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
@@ -214,7 +202,7 @@ export function AdminProducts({ searchQuery: globalSearch }: { searchQuery?: str
           >
             <Filter size={18} className={cn(sortOrder === 'desc' && "rotate-180")} />
           </button>
-          {['all', 'Soins visage', 'Corps', 'Maquillage'].map(cat => (
+          {['all', 'visage', 'corps', 'maquillage', 'accessoires'].map(cat => (
             <button
               key={cat}
               onClick={() => setSelectedCategory(cat)}
