@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { motion } from "motion/react";
+import { motion, AnimatePresence } from "motion/react";
 import { Link } from "react-router-dom";
-import { Heart, Globe, Award, Sparkles, ChevronRight, MessageCircle } from "lucide-react";
+import { Heart, Globe, Award, Sparkles, ChevronRight, MessageCircle, Star, X, Send } from "lucide-react";
+import { toast } from "react-hot-toast";
 import { useDesign } from "../context/DesignContext";
 import ImperialAbout from "./Imperial/ImperialAbout";
 import { dataService, AboutContent } from "../services/dataService";
+import { Testimonials } from "./Testimonials";
 
 const IconMap: Record<string, any> = {
   Sparkles,
@@ -190,27 +192,7 @@ export default function About() {
         </div>
       </section>
 
-      {/* Testimonials */}
-      <section className="py-32 px-6 bg-brand-obsidian overflow-hidden border-t border-white/5">
-        <div className="max-w-7xl mx-auto">
-          <h2 className="luxury-text text-4xl text-center mb-24 text-brand-champagne italic">Elles Rayonnent</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-            {[
-              { name: "Cynthia M.", comment: "Le Sérum Éclat a littéralement changé mon grain de peau. Adieu les taches !" },
-              { name: "Mariam T.", comment: "Enfin des produits qui comprennent ma peau sèche sous la chaleur de Cotonou. Je recommande !" }
-            ].map((t, idx) => (
-              <div key={idx} className="bg-brand-obsidian/40 p-12 rounded-[3.5rem] relative border border-white/5 shadow-premium group">
-                <p className="text-xl italic text-brand-champagne/60 mb-8 leading-relaxed uppercase tracking-widest text-sm font-light">"{t.comment}"</p>
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 bg-brand-bronze rounded-full flex items-center justify-center text-brand-obsidian font-black text-xs">{t.name[0]}</div>
-                  <p className="micro-label font-black tracking-[0.3em] text-brand-bronze uppercase">{t.name}</p>
-                </div>
-                <div className="absolute -top-6 -right-6 text-brand-bronze/10 transform scale-[5] group-hover:scale-[6] transition-transform duration-1000"><Sparkles size={24} /></div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+      <Testimonials />
 
       {/* Final CTA */}
       <section className="py-32 px-6">

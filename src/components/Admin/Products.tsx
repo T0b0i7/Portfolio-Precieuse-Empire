@@ -38,12 +38,18 @@ export function AdminProducts({ searchQuery: globalSearch }: { searchQuery?: str
   const [formData, setFormData] = useState({
     name: '',
     description: '',
+    long_description: '',
     price: 0,
+    stock: 0,
     category: 'visage' as any,
+    skin_type: 'Tous types',
     main_image: '',
     images: [] as string[],
     features: [] as string[],
-    is_bestseller: false
+    badges: [] as string[],
+    is_bestseller: false,
+    status: 'visible' as 'visible' | 'hidden',
+    planned_at: ''
   });
 
   useEffect(() => {
@@ -67,12 +73,18 @@ export function AdminProducts({ searchQuery: globalSearch }: { searchQuery?: str
     setFormData({
       name: product.name,
       description: product.description,
+      long_description: product.long_description || '',
       price: product.price,
+      stock: product.stock || 0,
       category: product.category,
+      skin_type: product.skin_type || 'Tous types',
       main_image: product.main_image,
       images: product.images || [],
       features: product.features || [],
-      is_bestseller: product.is_bestseller || false
+      badges: product.badges || [],
+      is_bestseller: product.is_bestseller || false,
+      status: product.status || 'visible',
+      planned_at: product.planned_at || ''
     });
     setIsFormOpen(true);
   };
@@ -82,12 +94,18 @@ export function AdminProducts({ searchQuery: globalSearch }: { searchQuery?: str
     setFormData({
       name: '',
       description: '',
+      long_description: '',
       price: 0,
+      stock: 0,
       category: 'visage',
+      skin_type: 'Tous types',
       main_image: '',
       images: [],
       features: [],
-      is_bestseller: false
+      badges: [],
+      is_bestseller: false,
+      status: 'visible',
+      planned_at: ''
     });
     setIsFormOpen(true);
   };
@@ -342,8 +360,8 @@ export function AdminProducts({ searchQuery: globalSearch }: { searchQuery?: str
                        <label className="text-[10px] font-bold tracking-widest uppercase text-black/40">DESCRIPTION COURTE</label>
                        <textarea 
                          required
-                         value={formData.short_desc}
-                         onChange={e => setFormData({ ...formData, short_desc: e.target.value })}
+                         value={formData.description}
+                         onChange={e => setFormData({ ...formData, description: e.target.value })}
                          rows={2}
                          className="bg-black/[0.02] border-none rounded-2xl py-4 px-6 outline-none focus:ring-1 focus:ring-brand-bronze/50 font-medium resize-none" 
                        />

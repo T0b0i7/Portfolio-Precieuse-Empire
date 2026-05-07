@@ -2,7 +2,7 @@ export interface Product {
   id: string;
   name: string;
   price: number;
-  description: string;
+  description: string; // Used as short_desc in some places
   long_description?: string;
   category: "visage" | "corps" | "maquillage" | "accessoires";
   main_image: string;
@@ -11,6 +11,9 @@ export interface Product {
   is_bestseller: boolean;
   badges?: string[];
   skin_type?: string;
+  stock?: number;
+  status?: "visible" | "hidden";
+  planned_at?: string;
 }
 
 export interface Routine {
@@ -20,6 +23,11 @@ export interface Routine {
   content: string;
   image: string;
   category: string;
+  tag?: string;
+  product_ids?: string;
+  status?: "published" | "draft";
+  planned_at?: string;
+  date?: string;
 }
 
 export interface Event {
@@ -28,7 +36,8 @@ export interface Event {
   description: string;
   image: string;
   date: string;
-  status: "upcoming" | "ongoing" | "finished";
+  location: string;
+  status: "upcoming" | "ongoing" | "finished" | "draft" | "archived" | "published";
 }
 
 export interface TeamMember {

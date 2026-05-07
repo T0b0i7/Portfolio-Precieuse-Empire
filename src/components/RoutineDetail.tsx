@@ -34,10 +34,26 @@ export default function RoutineDetail() {
       const found = routines.find((r: Routine) => r.id === id);
       if (found) {
         setRoutine(found);
-        const content = JSON.parse(found.content);
+        
+        let content;
+        try {
+          content = JSON.parse(found.content);
+          if (!content.steps) throw new Error("Invalid format");
+        } catch (e) {
+          // Fallback if not JSON or different format
+          content = {
+            intro: found.content,
+            steps: []
+          };
+        }
         setParsedContent(content);
         
-        const pIds = JSON.parse(found.product_ids || "[]");
+        let pIds = [];
+        try {
+          pIds = JSON.parse(found.product_ids || "[]");
+        } catch (e) {
+          pIds = [];
+        }
         const recs = products.filter((p: Product) => pIds.includes(p.id));
         setRecommendedProducts(recs);
       } else {
