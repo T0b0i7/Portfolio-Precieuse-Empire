@@ -71,7 +71,7 @@ export function AdminSettings() {
 
   const SectionTitle = ({ icon: Icon, title, subtitle }: any) => (
     <div className="flex items-center gap-4 mb-8">
-      <div className="w-12 h-12 rounded-2xl bg-brand-gold/10 flex items-center justify-center text-brand-gold shrink-0">
+      <div className="w-12 h-12 rounded-2xl bg-brand-bronze/10 flex items-center justify-center text-brand-bronze shrink-0">
         <Icon size={24} />
       </div>
       <div>
@@ -91,7 +91,7 @@ export function AdminSettings() {
         <button 
           onClick={handleSave}
           disabled={isSaving}
-          className="bg-brand-ebony text-white h-14 px-10 rounded-2xl flex items-center justify-center gap-3 text-[10px] font-bold uppercase tracking-widest hover:bg-brand-gold hover:text-brand-ebony transition-all shadow-xl disabled:opacity-50"
+          className="bg-brand-obsidian text-white h-14 px-10 rounded-2xl flex items-center justify-center gap-3 text-[10px] font-bold uppercase tracking-widest hover:bg-brand-bronze hover:text-brand-obsidian transition-all shadow-xl disabled:opacity-50"
         >
           {isSaving ? 'ENREGISTREMENT...' : <><Save size={18} /> ENREGISTRER LES MODIFICATIONS</>}
         </button>
@@ -138,7 +138,7 @@ export function AdminSettings() {
                </div>
                <button 
                  onClick={() => setSettings({...settings, popup_active: !settings.popup_active})}
-                 className={cn("w-14 h-8 rounded-full transition-all relative", settings.popup_active ? "bg-brand-gold" : "bg-black/10")}
+                 className={cn("w-14 h-8 rounded-full transition-all relative", settings.popup_active ? "bg-brand-bronze" : "bg-black/10")}
                >
                  <div className={cn("absolute top-1 w-6 h-6 bg-white rounded-full transition-all shadow-sm", settings.popup_active ? "right-1" : "left-1")} />
                </button>
@@ -205,20 +205,20 @@ export function AdminSettings() {
                   "w-full py-4 rounded-2xl text-[10px] font-bold uppercase tracking-widest transition-all",
                   settings.maintenance_mode 
                     ? "bg-amber-500 text-white shadow-xl shadow-amber-200" 
-                    : "bg-brand-ebony text-white"
+                    : "bg-brand-obsidian text-white"
                 )}
               >
                 {settings.maintenance_mode ? 'SITE EN MAINTENANCE' : 'ACTIVER LA MAINTENANCE'}
               </button>
             </div>
 
-            <div className="flex items-center gap-4 p-8 bg-brand-cream rounded-[2rem] border border-brand-gold/20">
-               <div className="w-12 h-12 rounded-full bg-white flex items-center justify-center text-brand-gold shrink-0">
+            <div className="flex items-center gap-4 p-8 bg-brand-bronze/5 rounded-[2rem] border border-brand-bronze/20">
+               <div className="w-12 h-12 rounded-full bg-white flex items-center justify-center text-brand-bronze shrink-0">
                   <AlertCircle size={24} />
                </div>
                <div>
-                  <h4 className="text-sm font-bold text-brand-ebony">Mode Développeur</h4>
-                  <p className="text-xs text-brand-ebony/60 leading-relaxed font-medium">Les modifications effectuées ici sont répercutées en temps réel sur la vitrine si Supabase est connecté.</p>
+                  <h4 className="text-sm font-bold text-brand-obsidian">Mode Développeur</h4>
+                  <p className="text-xs text-brand-obsidian/60 leading-relaxed font-medium">Les modifications effectuées ici sont répercutées en temps réel sur la vitrine si Supabase est connecté.</p>
                </div>
             </div>
           </div>

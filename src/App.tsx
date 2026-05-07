@@ -16,7 +16,8 @@ import {
   Facebook,
   Twitter,
   MessageCircle,
-  Sparkles
+  Sparkles,
+  Palette
 } from "lucide-react";
 import { Toaster, toast } from "react-hot-toast";
 import { cn } from "./lib/utils";
@@ -30,23 +31,25 @@ import Events from "./components/Events";
 import EventDetail from "./components/EventDetail";
 import About from "./components/About";
 import ProductDetail from "./components/ProductDetail";
+import { Testimonials } from "./components/Testimonials";
 
 // Services
 import { dataService } from "./services/dataService";
+import { useDesign } from "./context/DesignContext";
 
 // Motion Primitives
-import { TextSlide, Magnetic, Reveal, CinematicImage } from "./components/ui/motion";
+import { TextSlide, Magnetic, Reveal, CinematicImage, PageTransition, Parallax } from "./components/ui/motion";
+import { ImageWithPlaceholder } from "./components/ui/ImageWithPlaceholder";
+
+// Imperial Components
+import ImperialHome from "./components/Imperial/ImperialHome";
 
 // Pages
 const Home = () => {
+  const { design } = useDesign();
   const [bestSellers, setBestSellers] = useState<any[]>([]);
   const [routines, setRoutines] = useState<any[]>([]);
   const [latestEvent, setLatestEvent] = useState<any>(null);
-  const [testimonials] = useState([
-    { id: 1, author: "Awa K.", content: "Le sérum précieux a transformé mon grain de peau. Je ne m'en passe plus !", rating: 5 },
-    { id: 2, author: "Mariam D.", content: "Livraison rapide à Cotonou et produits d'une qualité rare. Bravo Précieuse Empire.", rating: 5 },
-    { id: 3, author: "Fatou B.", content: "Enfin une marque qui comprend les besoins des peaux melaninées.", rating: 5 }
-  ]);
 
   const [currentHeroImage, setCurrentHeroImage] = useState(0);
   const heroImages = [
@@ -77,10 +80,14 @@ const Home = () => {
     loadHomeData();
   }, []);
 
+  if (design === 'imperial') {
+    return <ImperialHome />;
+  }
+
   return (
     <div className="pt-0">
       {/* Hero Section - Majestic Visuals */}
-      <section className="relative h-screen overflow-hidden flex items-center justify-center bg-brand-ebony">
+      <section className="relative h-screen overflow-hidden flex items-center justify-center bg-brand-obsidian">
         <div className="absolute inset-0 z-0">
           <AnimatePresence mode="wait">
             <motion.div
@@ -91,15 +98,18 @@ const Home = () => {
               transition={{ duration: 2.5, ease: [0.16, 1, 0.3, 1] }}
               className="absolute inset-0"
             >
-              <CinematicImage 
-                src={heroImages[currentHeroImage]} 
-                alt="Cosmetics Hero"
-                className="w-full h-full object-cover rounded-none"
-              />
+              <Parallax offset={20} className="w-full h-full">
+                <ImageWithPlaceholder 
+                  src={heroImages[currentHeroImage]} 
+                  alt="Cosmetics Hero"
+                  className="w-full h-full object-cover rounded-none"
+                  priority={true}
+                />
+              </Parallax>
             </motion.div>
           </AnimatePresence>
-          <div className="absolute inset-0 bg-brand-ebony/40 backdrop-blur-[2px]" />
-          <div className="absolute inset-0 bg-gradient-to-b from-brand-ebony/60 via-transparent to-brand-ebony/80" />
+          <div className="absolute inset-0 bg-brand-obsidian/40 backdrop-blur-[2px]" />
+          <div className="absolute inset-0 bg-gradient-to-b from-brand-obsidian/60 via-transparent to-brand-obsidian/80" />
           
           {/* Hero Image Navigation Dots */}
           <div className="absolute bottom-12 right-12 z-20 flex flex-col gap-4">
@@ -111,13 +121,13 @@ const Home = () => {
                 >
                   <span className={cn(
                     "micro-label text-[8px] tracking-[0.3em] transition-all duration-500",
-                    currentHeroImage === idx ? "text-brand-gold opacity-100" : "text-white opacity-20 group-hover:opacity-60"
+                    currentHeroImage === idx ? "text-brand-bronze opacity-100" : "text-white opacity-20 group-hover:opacity-60"
                   )}>
                     {String(idx + 1).padStart(2, '0')}
                   </span>
                   <div className={cn(
                     "h-[1px] transition-all duration-700",
-                    currentHeroImage === idx ? "w-12 bg-brand-gold" : "w-4 bg-white/20 group-hover:w-8"
+                    currentHeroImage === idx ? "w-12 bg-brand-bronze" : "w-4 bg-white/20 group-hover:w-8"
                   )} />
                 </button>
              ))}
@@ -130,13 +140,23 @@ const Home = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1.2, delay: 0.5, ease: [0.22, 1, 0.36, 1] }}
           >
-            <span className="micro-label text-brand-gold text-[10px] sm:text-xs tracking-[0.8em] mb-12 block uppercase font-black drop-shadow-lg">
+            <span className="micro-label text-brand-bronze text-[10px] sm:text-xs tracking-[0.8em] mb-12 block uppercase font-black drop-shadow-lg">
               L'ART DE LA BEAUTÉ IMPÉRIALE
             </span>
             
-            <h1 className="luxury-text text-7xl sm:text-8xl md:text-9xl lg:text-[10rem] font-black text-white leading-[0.85] tracking-tighter mb-10 italic drop-shadow-2xl">
-              ÉCLAT <span className="text-brand-gold italic font-light block mt-4 drop-shadow-lg">RARE</span>
-            </h1>
+             <motion.h1 
+                initial={{ opacity: 0, y: 50, rotateX: 20 }}
+                animate={{ opacity: 1, y: 0, rotateX: 0 }}
+                transition={{ duration: 1.5, delay: 0.8, ease: [0.16, 1, 0.3, 1] }}
+                className="luxury-text text-7xl sm:text-8xl md:text-9xl lg:text-[10rem] font-black text-white leading-[0.85] tracking-tighter mb-10 italic drop-shadow-2xl"
+              >
+                ÉCLAT <motion.span 
+                  initial={{ opacity: 0, x: -50 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 1.8, delay: 1.2 }}
+                  className="text-brand-bronze italic font-light block mt-4 drop-shadow-lg"
+                >RARE</motion.span>
+              </motion.h1>
 
             <p className="text-brand-cream/80 text-lg sm:text-2xl font-light tracking-wide max-w-2xl mx-auto mb-16 leading-relaxed luxury-text italic drop-shadow-md">
               L'excellence africaine au service de votre éclat naturel. Un rituel sacré, une perfection moderne.
@@ -146,7 +166,7 @@ const Home = () => {
               <Magnetic>
                 <Link 
                   to="/catalogue" 
-                  className="px-14 py-6 bg-brand-gold text-brand-ebony micro-label text-xs tracking-[0.4em] font-black hover:bg-white transition-all duration-500 rounded-full shadow-[0_20px_50px_rgba(197,161,107,0.4)] flex items-center gap-4"
+                  className="px-14 py-6 bg-brand-bronze text-brand-obsidian micro-label text-xs tracking-[0.4em] font-black hover:bg-white transition-all duration-500 rounded-full shadow-bronze-glow flex items-center gap-4"
                 >
                   EXPLORER L'EMPIRE <ChevronRight size={18} />
                 </Link>
@@ -162,25 +182,10 @@ const Home = () => {
             </div>
           </motion.div>
         </div>
-        
-        {/* Scroll Indicator - Vengence UI Style */}
-        <motion.div 
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 2.5 }}
-          className="absolute bottom-16 left-1/2 -translate-x-1/2 flex flex-col items-center gap-4"
-        >
-          <span className="micro-label text-white/30 text-[8px] tracking-[0.8em]">SCROLL</span>
-          <motion.div 
-            animate={{ height: [0, 60, 0], y: [0, 20, 0] }}
-            transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
-            className="w-[2px] bg-brand-gold"
-          />
-        </motion.div>
       </section>
 
       {/* Reassurance Band - Forge UI Technical Grid */}
-      <section className="bg-brand-ebony py-32 border-y border-white/5">
+      <section className="bg-brand-obsidian py-32 border-y border-brand-bronze/10">
         <div className="max-w-7xl mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-20">
           {[
             { tag: "01. NATUREL", icon: <Sparkles size={24}/>, desc: "Ingrédients Purs" },
@@ -189,76 +194,101 @@ const Home = () => {
             { tag: "04. CONSEIL", icon: <MessageCircle size={24}/>, desc: "Experts Dédiés" },
           ].map((item, idx) => (
             <Reveal key={item.tag} delay={idx * 0.1}>
-              <div className="group cursor-default border-l border-white/5 pl-8 py-4 hover:border-brand-gold transition-colors duration-700">
-                <div className="text-brand-gold/60 mb-6 group-hover:text-brand-gold transition-colors group-hover:scale-110 transition-transform origin-left">
+              <div className="group cursor-default border-l border-brand-bronze/10 pl-8 py-4 hover:border-brand-bronze transition-colors duration-700">
+                <div className="text-brand-bronze/60 mb-6 group-hover:text-brand-bronze transition-colors group-hover:scale-110 transition-transform origin-left">
                   {item.icon}
                 </div>
-                <h4 className="micro-label text-white mb-2 tracking-[0.4em]">{item.tag}</h4>
-                <p className="text-[11px] text-white/40 uppercase tracking-[0.3em] font-medium">{item.desc}</p>
+                <h4 className="micro-label text-brand-champagne mb-2 tracking-[0.4em]">{item.tag}</h4>
+                <p className="text-[11px] text-brand-champagne/40 uppercase tracking-[0.3em] font-medium">{item.desc}</p>
               </div>
             </Reveal>
           ))}
         </div>
       </section>
 
-      {/* Featured Categories (Bento Grid) - Vengence UI Style magnetic cards */}
-      <section className="py-40 px-6 max-w-7xl mx-auto">
-        <div className="flex flex-col md:flex-row items-end justify-between mb-20 gap-8">
-          <Reveal className="max-w-xl">
-             <h2 className="luxury-text text-5xl md:text-7xl mb-10 leading-[0.9]">Collections Impériales</h2>
-             <p className="text-lg opacity-60 leading-relaxed text-ui-muted font-medium">Chaque gamme est pensée pour répondre aux besoins spécifiques des peaux mélaninées, avec des ingrédients purs et puissants.</p>
-          </Reveal>
-          <Reveal delay={0.2}>
-            <Magnetic>
-              <Link to="/catalogue" className="micro-label text-brand-gold hover:underline flex items-center gap-3 py-2 border-b border-brand-gold/20">
-                VOIR LE CATALOGUE ENTIER <ChevronRight size={14}/>
-              </Link>
-            </Magnetic>
-          </Reveal>
-        </div>
+      {/* Featured Categories (Bento Grid) - Collection Impériale Abyssal Theme */}
+      <section className="py-40 px-6 mt-20 relative">
+        <div className="max-w-7xl mx-auto bg-brand-obsidian rounded-[4rem] p-12 md:p-24 border border-brand-bronze/20 shadow-premium relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-64 h-64 bg-brand-bronze/5 blur-[100px] -translate-y-1/2 translate-x-1/2" />
+          
+          <div className="flex flex-col md:flex-row items-end justify-between mb-20 gap-8 relative z-10">
+            <Reveal className="max-w-xl">
+               <h2 className="luxury-text text-5xl md:text-7xl mb-10 leading-[0.9] text-white">Collections Impériales</h2>
+               <p className="text-lg opacity-60 leading-relaxed text-brand-champagne font-medium">Chaque gamme est pensée pour répondre aux besoins spécifiques des peaux mélaninées, avec des ingrédients purs et puissants.</p>
+            </Reveal>
+            <Reveal delay={0.2}>
+              <Magnetic>
+                <Link to="/catalogue" className="micro-label text-brand-bronze hover:underline flex items-center gap-3 py-2 border-b border-brand-bronze/20">
+                  ACCÉDER À LA BOUTIQUE <ChevronRight size={14}/>
+                </Link>
+              </Magnetic>
+            </Reveal>
+          </div>
         
         <div className="grid grid-cols-1 md:grid-cols-4 gap-10">
           <div className="md:col-span-2 md:row-span-2 h-[700px]">
             <Reveal className="h-full">
-              <Link to="/catalogue?category=visage" className="block h-full group relative overflow-hidden rounded-[3.5rem] shadow-2xl">
-                <CinematicImage src="https://images.unsplash.com/photo-1512496011212-721d80ad6668?auto=format&fit=crop&w=800" alt="Visage" className="h-full rounded-none" />
-                <div className="absolute inset-0 bg-gradient-to-t from-brand-ebony/80 via-brand-ebony/20 to-transparent flex flex-col justify-end p-16">
-                  <h3 className="text-white text-5xl luxury-text mb-4">Soins Visage</h3>
-                  <p className="text-brand-gold micro-label tracking-[0.3em]">L'ÉCLAT ROYAL À CHAQUE INSTANT</p>
-                </div>
-              </Link>
+              <Parallax offset={20} className="h-full">
+                <Link to="/catalogue?category=visage" className="block h-full group relative overflow-hidden rounded-[4rem] shadow-premium">
+                  <ImageWithPlaceholder 
+                    src="https://images.unsplash.com/photo-1512496011212-721d80ad6668?auto=format&fit=crop&w=800" 
+                    alt="Visage" 
+                    className="h-full w-full object-cover transition-transform duration-[2s] group-hover:scale-105" 
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-brand-obsidian/90 via-brand-obsidian/20 to-transparent flex flex-col justify-end p-16">
+                    <motion.h3 
+                      whileHover={{ x: 10 }}
+                      className="text-white text-5xl luxury-text mb-4 transition-colors group-hover:text-brand-bronze"
+                    >
+                      Soins Visage
+                    </motion.h3>
+                    <p className="text-brand-bronze micro-label tracking-[0.3em]">L'ÉCLAT ROYAL À CHAQUE INSTANT</p>
+                  </div>
+                </Link>
+              </Parallax>
             </Reveal>
           </div>
           
           <div className="md:col-span-2 h-[330px]">
             <Reveal delay={0.2} className="h-full">
-              <Link to="/catalogue?category=corps" className="block h-full group relative overflow-hidden rounded-[3.5rem] shadow-2xl">
-                <CinematicImage src="https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=800" alt="Corps" className="h-full rounded-none" />
-                <div className="absolute inset-0 bg-gradient-to-t from-brand-ebony/80 to-transparent flex flex-col justify-end p-12">
-                  <h3 className="text-white text-3xl luxury-text">Corps & Harmonie</h3>
-                </div>
-              </Link>
+              <Parallax offset={-20} className="h-full">
+                <Link to="/catalogue?category=corps" className="block h-full group relative overflow-hidden rounded-[4rem] shadow-premium">
+                  <ImageWithPlaceholder 
+                    src="https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=800" 
+                    alt="Corps" 
+                    className="h-full w-full object-cover transition-transform duration-[2s] group-hover:scale-105" 
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-brand-obsidian/80 to-transparent flex flex-col justify-end p-12">
+                    <h3 className="text-white text-3xl luxury-text">Corps & Harmonie</h3>
+                  </div>
+                </Link>
+              </Parallax>
             </Reveal>
           </div>
           
-          <div className="md:col-span-2 h-[330px]">
-            <Reveal delay={0.4} className="h-full">
-              <Link to="/catalogue?category=maquillage" className="block h-full group relative overflow-hidden rounded-[3.5rem] shadow-2xl">
-                <CinematicImage src="https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=800" alt="Maquillage" className="h-full rounded-none" />
-                <div className="absolute inset-0 bg-gradient-to-t from-brand-ebony/80 to-transparent flex flex-col justify-end p-12">
-                  <h3 className="text-white text-3xl luxury-text">Maquillage Précieux</h3>
-                </div>
-              </Link>
-            </Reveal>
+            <div className="md:col-span-2 h-[330px]">
+              <Reveal delay={0.4} className="h-full">
+                <Link to="/catalogue?category=maquillage" className="block h-full group relative overflow-hidden rounded-[4rem] shadow-premium border border-white/5">
+                  <ImageWithPlaceholder 
+                    src="https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=800" 
+                    alt="Maquillage" 
+                    className="h-full w-full object-cover transition-transform duration-[2s] group-hover:scale-105" 
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-brand-obsidian/80 to-transparent flex flex-col justify-end p-12">
+                    <h3 className="text-white text-3xl luxury-text">Maquillage Précieux</h3>
+                  </div>
+                </Link>
+              </Reveal>
+            </div>
           </div>
         </div>
       </section>
-
-      {/* Best Sellers - Vengence UI Style Magnetic Products */}
-      <section className="py-40 bg-brand-ebony/[0.02]">
-        <div className="max-w-7xl mx-auto px-6">
+           {/* Best Sellers - Vengence UI Style Magnetic Products */}
+      <section className="py-40 bg-brand-ebene-chaud relative overflow-hidden">
+        <div className="absolute inset-0 bg-brand-jade/5 opacity-30 pointer-events-none" />
+        <div className="max-w-7xl mx-auto px-6 relative z-10">
           <Reveal className="text-center mb-24">
-            <p className="micro-label text-brand-gold mb-4 tracking-[0.5em] uppercase">Sélection</p>
+            <p className="micro-label text-brand-jade mb-4 tracking-[0.5em] uppercase font-black">SÃ©rum d'Empress Selection</p>
             <h2 className="luxury-text text-5xl md:text-7xl">Nos Best-Sellers</h2>
           </Reveal>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-12">
@@ -266,19 +296,22 @@ const Home = () => {
               <Reveal key={p.id} delay={idx * 0.1}>
                 <Magnetic>
                   <Link to={`/catalogue/${p.id}`} className="group block">
-                    <div className="aspect-[3/4] rounded-[3rem] overflow-hidden mb-8 relative shadow-lg group-hover:shadow-2xl transition-all duration-500">
-                      <img src={p.main_image} className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" />
-                      <div className="absolute inset-0 bg-gradient-to-t from-brand-ebony/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                      <div className="absolute bottom-6 left-6 right-6 translate-y-10 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500">
+                    <div className="aspect-[3/4] rounded-[3rem] overflow-hidden mb-8 relative shadow-lg group-hover:shadow-premium transition-all duration-1000 border border-white/5 bg-brand-obsidian">
+                      <ImageWithPlaceholder 
+                        src={p.main_image} 
+                        alt={p.name}
+                        className="w-full h-full object-cover transition-transform duration-[2s] group-hover:scale-110 opacity-90 group-hover:opacity-100" 
+                      />
+                      <div className="absolute inset-x-0 bottom-0 p-6 flex flex-col items-center z-10 translate-y-12 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-700">
                         <button 
-                          className="w-full bg-brand-ebony text-white py-4 rounded-2xl micro-label flex items-center justify-center gap-3 shadow-2xl hover:bg-brand-gold hover:text-brand-ebony transition-all font-bold"
+                          className="w-full bg-white text-brand-obsidian py-4 rounded-2xl micro-label flex items-center justify-center gap-3 shadow-2xl hover:bg-brand-jade hover:text-white transition-all font-bold tracking-widest"
                         >
-                          <ShoppingBag size={16} /> VOIR L'ARTICLE
+                          VOIR L'ARTICLE
                         </button>
                       </div>
                     </div>
-                    <h3 className="luxury-text text-2xl mb-2 group-hover:text-brand-gold transition-colors">{p.name}</h3>
-                    <p className="text-brand-gold-muted font-bold tracking-widest">{p.price.toLocaleString()} FCFA</p>
+                    <h3 className="luxury-text text-2xl mb-2 group-hover:text-brand-jade transition-colors">{p.name}</h3>
+                    <p className="luxury-text text-brand-jade font-bold tracking-widest">{p.price.toLocaleString()} FCFA</p>
                   </Link>
                 </Magnetic>
               </Reveal>
@@ -291,16 +324,16 @@ const Home = () => {
       {latestEvent && (
         <section className="py-40 px-6 max-w-7xl mx-auto">
            <Reveal>
-             <div className="bg-brand-ebony p-12 md:p-32 rounded-[5rem] grid grid-cols-1 md:grid-cols-2 gap-20 items-center shadow-[0_50px_100px_-15px_rgba(0,0,0,0.4)] relative overflow-hidden group">
+              <div className="bg-brand-velvet p-12 md:p-32 rounded-[5rem] grid grid-cols-1 md:grid-cols-2 gap-20 items-center shadow-premium relative overflow-hidden group border border-white/5">
                 <div className="relative z-10">
                    <TextSlide delay={0.2} className="mb-6">
-                      <p className="micro-label text-brand-gold uppercase tracking-[0.6em]">En Vedette</p>
+                      <p className="micro-label text-brand-bronze uppercase tracking-[0.6em]">En Vedette</p>
                    </TextSlide>
                    <Reveal delay={0.4}>
                       <h2 className="luxury-text text-5xl md:text-8xl mb-12 leading-tight text-white">{latestEvent.title}</h2>
-                      <p className="text-brand-cream/60 text-xl leading-relaxed mb-12 font-light">{latestEvent.description}</p>
+                      <p className="text-brand-champagne/60 text-xl leading-relaxed mb-12 font-light">{latestEvent.description}</p>
                       <Magnetic>
-                        <Link to="/evenements" className="btn-outline border-white/20 text-white hover:bg-white hover:text-brand-ebony px-12 py-5 rounded-full inline-block">
+                        <Link to="/evenements" className="btn-outline border-white/20 text-white hover:bg-white hover:text-brand-obsidian px-12 py-5 rounded-full inline-block">
                            PARTICIPER À L'ÉVÉNEMENT
                         </Link>
                       </Magnetic>
@@ -311,8 +344,8 @@ const Home = () => {
                      <img src={latestEvent.image} className="w-full h-full object-cover transition-transform duration-[2s] group-hover:scale-110" />
                   </div>
                 </Reveal>
-                <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-brand-gold/5 rounded-full blur-[150px]" />
-                <div className="absolute -bottom-20 -left-20 w-[400px] h-[400px] bg-brand-gold/5 rounded-full blur-[120px]" />
+                <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-brand-bronze/5 rounded-full blur-[150px]" />
+                <div className="absolute -bottom-20 -left-20 w-[400px] h-[400px] bg-brand-bronze/5 rounded-full blur-[120px]" />
              </div>
            </Reveal>
         </section>
@@ -326,9 +359,9 @@ const Home = () => {
            </Reveal>
            <Reveal delay={0.2}>
              <Magnetic>
-               <Link to="/routines" className="micro-label opacity-40 hover:opacity-100 flex items-center gap-3 tracking-[0.2em]">
-                 DÉCOUVRIR LE MAG <ChevronRight size={14} />
-               </Link>
+                <Link to="/routines" className="micro-label opacity-40 hover:opacity-100 hover:text-brand-bronze flex items-center gap-3 tracking-[0.2em] transition-all">
+                  DÉCOUVRIR LE MAG <ChevronRight size={14} />
+                </Link>
              </Magnetic>
            </Reveal>
         </div>
@@ -336,49 +369,18 @@ const Home = () => {
           {routines.map((routine, idx) => (
             <Reveal key={routine.id} delay={idx * 0.2}>
               <Link to={`/routines/${routine.id}`} className="group block">
-                 <div className="aspect-[16/10] rounded-[3.5rem] overflow-hidden mb-10 shadow-xl">
+                 <div className="aspect-[16/10] rounded-[3.5rem] overflow-hidden mb-10 shadow-xl border border-white/5">
                     <img src={routine.image} className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" />
                  </div>
-                 <h3 className="luxury-text text-3xl mb-6 group-hover:text-brand-gold transition-colors leading-tight">{routine.title}</h3>
-                 <p className="text-lg opacity-50 line-clamp-2 leading-relaxed font-medium">{routine.excerpt}</p>
+                 <h3 className="luxury-text text-3xl mb-6 group-hover:text-brand-bronze transition-colors leading-tight">{routine.title}</h3>
+                 <p className="text-lg opacity-50 line-clamp-2 leading-relaxed font-medium text-brand-champagne">{routine.excerpt}</p>
               </Link>
             </Reveal>
           ))}
         </div>
       </section>
 
-      {/* Testimonials - UI LORA Smooth Transitions */}
-      <section className="py-40 bg-brand-ebony text-brand-cream relative overflow-hidden">
-         <div className="absolute inset-0 opacity-10 pointer-events-none">
-            <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-brand-gold rounded-full blur-[200px]" />
-            <div className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-brand-gold rounded-full blur-[200px]" />
-         </div>
-         <div className="max-w-5xl mx-auto px-6 text-center relative z-10">
-            <Reveal className="flex justify-center gap-4 mb-20">
-               {[1,2,3,4,5].map(i => <Sparkles key={i} size={28} className="text-brand-gold/40" />)}
-            </Reveal>
-            <div className="relative min-h-[400px] flex items-center justify-center">
-               <AnimatePresence mode="wait">
-                  <motion.div 
-                    key={testimonials[0].id}
-                    initial={{ opacity: 0, scale: 0.9, filter: "blur(10px)" }}
-                    animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
-                    exit={{ opacity: 0, scale: 1.1, filter: "blur(10px)" }}
-                    transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-                    className="p-12"
-                  >
-                    <p className="luxury-text text-4xl md:text-6xl italic mb-16 text-brand-champagne leading-tight">
-                      "{testimonials[0].content}"
-                    </p>
-                    <div className="flex flex-col items-center gap-4">
-                       <div className="w-12 h-px bg-brand-gold/30" />
-                       <p className="micro-label text-brand-gold tracking-[0.5em] uppercase font-bold">— {testimonials[0].author}</p>
-                    </div>
-                  </motion.div>
-               </AnimatePresence>
-            </div>
-         </div>
-      </section>
+      <Testimonials />
 
       {/* Short About - Forge UI Simple Elegant Reveal */}
       <section className="py-40 px-6 max-w-7xl mx-auto text-center">
@@ -386,11 +388,11 @@ const Home = () => {
            <h2 className="luxury-text text-4xl md:text-6xl mb-12 max-w-3xl mx-auto font-light leading-tight">
              Plus qu'une marque, une célébration de l'héritage précieux de la peau mélaninée.
            </h2>
-           <p className="text-xl text-ui-muted mb-16 max-w-2xl mx-auto leading-relaxed font-medium">
+           <p className="text-xl text-brand-champagne/60 mb-16 max-w-2xl mx-auto leading-relaxed font-medium">
              Chaque formulation PRÉCIEUSE EMPIRE est un secret partagé, un rituel de dignité et un éclat retrouvé.
            </p>
            <Magnetic>
-             <Link to="/a-propos" className="btn-outline border-brand-ebony/10 px-12 py-5 rounded-full inline-block tracking-widest font-bold text-xs">
+             <Link to="/a-propos" className="btn-outline border-brand-bronze/10 px-12 py-5 rounded-full inline-block tracking-widest font-bold text-xs uppercase">
                NOTRE VISION
              </Link>
            </Magnetic>
@@ -398,18 +400,22 @@ const Home = () => {
       </section>
 
       {/* Instagram Grid - Cinematic Grid Load */}
-      <section className="py-40 px-6 max-w-7xl mx-auto overflow-hidden text-center border-t border-brand-ebony/5">
+      <section className="py-40 px-6 max-w-7xl mx-auto overflow-hidden text-center border-t border-brand-bronze/5">
          <Reveal className="mb-24">
             <h2 className="luxury-text text-5xl mb-6">Suivez l'Empire</h2>
-            <p className="micro-label text-brand-gold tracking-[0.4em] uppercase font-bold">@precieuse_empire_officiel</p>
+            <p className="micro-label text-brand-bronze tracking-[0.4em] uppercase font-black">@precieuse_empire_officiel</p>
          </Reveal>
          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6">
             {[1,2,3,4,5,6].map((i) => (
               <Reveal key={i} delay={i * 0.1}>
                 <Magnetic>
-                  <div className="aspect-square bg-brand-ink/5 rounded-[2rem] overflow-hidden group relative cursor-pointer shadow-sm hover:shadow-2xl transition-all duration-700">
-                     <img src={`https://images.unsplash.com/photo-1596462502278-27bfaf43399f?auto=format&fit=crop&q=80&w=300&sig=${i}`} className="w-full h-full object-cover grayscale brightness-90 group-hover:grayscale-0 group-hover:brightness-100 group-hover:scale-110 transition-all duration-700" />
-                     <div className="absolute inset-0 bg-brand-gold/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                  <div className="aspect-square bg-brand-bronze/5 rounded-[2rem] overflow-hidden group relative cursor-pointer shadow-premium hover:scale-105 transition-all duration-700 border border-white/5">
+                     <ImageWithPlaceholder 
+                        src={`https://images.unsplash.com/photo-1596462502278-27bfaf43399f?auto=format&fit=crop&q=80&w=300&sig=${i}`} 
+                        alt="Instagram style"
+                        className="w-full h-full grayscale brightness-90 group-hover:grayscale-0 group-hover:brightness-100 transition-all duration-700" 
+                     />
+                     <div className="absolute inset-0 bg-brand-bronze/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                         <Instagram className="text-white" size={32} />
                      </div>
                   </div>
@@ -423,6 +429,7 @@ const Home = () => {
 };
 
 const Navbar = () => {
+  const { design, toggleDesign } = useDesign();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
@@ -469,7 +476,13 @@ const Navbar = () => {
     }
   };
 
-  const navLinks = [
+  const navLinks = design === 'imperial' ? [
+    { name: "Sanctuaire", path: "/" },
+    { name: "Archives", path: "/catalogue" },
+    { name: "Événements", path: "/evenements" },
+    { name: "Rituels", path: "/routines" },
+    { name: "Héritage", path: "/a-propos" },
+  ] : [
     { name: "Accueil", path: "/" },
     { name: "Catalogue", path: "/catalogue" },
     { name: "Événements", path: "/evenements" },
@@ -490,12 +503,22 @@ const Navbar = () => {
       <div className={cn(
         "max-w-[1500px] mx-auto transition-all duration-1000 flex items-center justify-between px-10 sm:px-12 rounded-[2.5rem] relative group",
         (isScrolled || location.pathname !== '/')
-          ? "bg-brand-ebony/95 backdrop-blur-3xl py-4 sm:py-5 border border-white/10 shadow-[0_40px_100px_-20px_rgba(0,0,0,0.6)]" 
+          ? "bg-brand-obsidian/95 backdrop-blur-3xl py-4 sm:py-5 border border-white/10 shadow-premium" 
           : "bg-white/5 backdrop-blur-md py-6 sm:py-8 border border-white/5 hover:bg-white/10"
       )}>
-        <Link to="/" className="flex flex-col items-start shrink-0">
-          <span className="luxury-text text-2xl sm:text-3xl font-black tracking-tighter text-white leading-none">PRÉCIEUSE</span>
-          <span className="micro-label text-brand-gold text-[7px] sm:text-[8px] tracking-[1em] mt-1">EMPIRE</span>
+        <Link to="/" className="flex flex-col items-start shrink-0 group/logo">
+          <motion.span 
+            whileHover={{ x: 5 }}
+            className="luxury-text text-2xl sm:text-3xl font-black tracking-tighter text-white leading-none transition-colors group-hover/logo:text-brand-bronze"
+          >
+            PRÉCIEUSE
+          </motion.span>
+          <motion.span 
+            whileHover={{ x: -2 }}
+            className="micro-label text-brand-bronze text-[7px] sm:text-[8px] tracking-[1em] mt-1 opacity-80 group-hover/logo:opacity-100"
+          >
+            EMPIRE
+          </motion.span>
         </Link>
 
         {/* Desktop Nav - Majestic Center Links */}
@@ -512,13 +535,13 @@ const Navbar = () => {
                 className={cn(
                   "micro-label transition-all relative group py-2 text-[10px] tracking-[0.4em] font-black whitespace-nowrap",
                   location.pathname === link.path 
-                    ? "text-brand-gold" 
+                    ? "text-brand-bronze" 
                     : "text-white/40 hover:text-white"
                 )}
               >
                 {link.name.toUpperCase()}
                 <span className={cn(
-                  "absolute -bottom-1 left-0 w-0 h-[1px] bg-brand-gold transition-all duration-700 ease-out group-hover:w-full",
+                  "absolute -bottom-1 left-0 w-0 h-[1px] bg-brand-bronze transition-all duration-700 ease-out group-hover:w-full",
                   location.pathname === link.path && "w-full"
                 )} />
               </Link>
@@ -528,6 +551,7 @@ const Navbar = () => {
 
         <div className="flex items-center gap-3 sm:gap-6 shrink-0">
           {[
+            { icon: <Palette size={18} />, action: toggleDesign, label: design === 'modern' ? 'IMPÉRIAL' : 'MODERNE' },
             { icon: <Search size={18} />, action: () => setIsSearchOpen(true), label: "RECHERCHE" },
             { icon: <Heart size={18} />, path: "/favoris", label: "FAVORIS" },
             { icon: <LayoutDashboard size={18} />, path: "/admin", label: "ADMIN" }
@@ -543,7 +567,7 @@ const Navbar = () => {
                     {item.icon}
                   </button>
                 )}
-                <span className="absolute -bottom-12 left-1/2 -translate-x-1/2 micro-label text-[7px] tracking-[0.2em] font-black text-brand-gold opacity-0 group-hover:opacity-100 transition-all bg-brand-ebony/90 backdrop-blur-xl px-3 py-2 rounded-lg whitespace-nowrap shadow-xl pointer-events-none border border-white/10 z-[110]">
+                <span className="absolute -bottom-12 left-1/2 -translate-x-1/2 micro-label text-[7px] tracking-[0.2em] font-black text-brand-bronze opacity-0 group-hover:opacity-100 transition-all bg-brand-obsidian/90 backdrop-blur-xl px-3 py-2 rounded-lg whitespace-nowrap shadow-xl pointer-events-none border border-white/10 z-[110]">
                   {item.label}
                 </span>
               </div>
@@ -566,27 +590,27 @@ const Navbar = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[70] bg-brand-ebony/95 backdrop-blur-2xl flex items-center justify-center px-6"
+            className="fixed inset-0 z-[70] bg-brand-obsidian/95 backdrop-blur-2xl flex items-center justify-center px-6"
           >
             <button 
               onClick={() => setIsSearchOpen(false)}
-              className="absolute top-10 right-10 text-white hover:text-brand-gold transition-all p-4 border border-white/10 rounded-full"
+              className="absolute top-10 right-10 text-white hover:text-brand-bronze transition-all p-4 border border-white/10 rounded-full"
             >
               <X size={32} />
             </button>
             <div className="max-w-4xl w-full">
               <form onSubmit={handleGlobalSearch} className="relative">
-                <p className="micro-label text-brand-gold mb-6 tracking-[0.5em] text-center">QUE RECHERCHEZ-VOUS DANS L'EMPIRE ?</p>
+                <p className="micro-label text-brand-bronze mb-6 tracking-[0.5em] text-center">QUE RECHERCHEZ-VOUS DANS L'EMPIRE ?</p>
                 <input 
                   autoFocus
                   type="text" 
                   value={globalSearch}
                   onChange={(e) => setGlobalSearch(e.target.value)}
                   placeholder="Tapez un ingrédient, un éclat, un secret..."
-                  className="w-full bg-transparent border-b-2 border-white/10 text-4xl md:text-7xl luxury-text text-white py-8 focus:outline-none focus:border-brand-gold transition-all placeholder:opacity-10 text-center"
+                  className="w-full bg-transparent border-b-2 border-white/10 text-4xl md:text-7xl luxury-text text-white py-8 focus:outline-none focus:border-brand-bronze transition-all placeholder:opacity-10 text-center"
                 />
                 <div className="mt-8 flex justify-center">
-                   <button type="submit" className="micro-label text-white/40 hover:text-brand-gold transition-all flex items-center gap-4 group">
+                   <button type="submit" className="micro-label text-white/40 hover:text-brand-bronze transition-all flex items-center gap-4 group">
                       APPUYEZ SUR ENTRÉE POUR RÉVÉLER <ChevronRight size={16} className="group-hover:translate-x-2 transition-all"/>
                    </button>
                 </div>
@@ -604,10 +628,10 @@ const Navbar = () => {
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: "100%" }}
             transition={{ type: "spring", damping: 30, stiffness: 200 }}
-            className="fixed inset-0 bg-brand-ebony z-[200] flex flex-col p-12"
+            className="fixed inset-0 bg-brand-obsidian z-[200] flex flex-col p-12"
           >
             <div className="flex justify-between items-center mb-24">
-               <span className="luxury-text text-white text-3xl font-black">PRÉCIEUSE <span className="text-brand-gold">EMPIRE</span></span>
+               <span className="luxury-text text-white text-3xl font-black italic">PRÉCIEUSE <span className="text-brand-bronze">EMPIRE</span></span>
                <button onClick={() => setIsMobileMenuOpen(false)} className="text-white bg-white/10 p-5 rounded-full"><X size={32}/></button>
             </div>
             
@@ -615,16 +639,26 @@ const Navbar = () => {
               {navLinks.map((link, idx) => (
                 <motion.div
                   key={link.path}
-                  initial={{ opacity: 0, x: 50 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.1 * idx + 0.3 }}
+                  initial={{ opacity: 0, y: 40, filter: "blur(10px)" }}
+                  animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                  exit={{ opacity: 0, y: 20, filter: "blur(10px)" }}
+                  transition={{ 
+                    duration: 0.8,
+                    delay: 0.1 * idx + 0.3,
+                    ease: [0.16, 1, 0.3, 1]
+                  }}
                 >
                   <Link 
                     to={link.path} 
                     onClick={() => setIsMobileMenuOpen(false)}
-                    className="luxury-text text-5xl text-white hover:text-brand-gold transition-colors inline-block uppercase"
+                    className="luxury-text text-5xl text-white hover:text-brand-bronze transition-colors inline-block uppercase relative group"
                   >
                     {link.name}
+                    <motion.span 
+                      initial={{ width: 0 }}
+                      whileHover={{ width: "100%" }}
+                      className="absolute -bottom-2 left-0 h-1 bg-brand-bronze transition-all"
+                    />
                   </Link>
                 </motion.div>
               ))}
@@ -632,13 +666,13 @@ const Navbar = () => {
             
             <div className="mt-auto pt-16 border-t border-white/10 flex flex-col gap-10">
                <div>
-                  <p className="micro-label text-brand-gold mb-4">L'EXCELLENCE AFRICAINE</p>
-                  <p className="text-white/40 text-xs leading-relaxed max-w-xs">Sublimez votre éclat naturel avec nos rituels d'exception inspirés des traditions ancestrales.</p>
+                  <p className="micro-label text-brand-bronze mb-4">L'EXCELLENCE AFRICAINE</p>
+                  <p className="text-brand-champagne/40 text-xs leading-relaxed max-w-xs uppercase tracking-widest font-bold">Sublimez votre éclat naturel avec nos rituels d'exception inspirés des traditions ancestrales.</p>
                </div>
                <div className="flex gap-8">
-                  <Instagram className="text-white/40 hover:text-brand-gold cursor-pointer" size={24}/>
-                  <Facebook className="text-white/40 hover:text-brand-gold cursor-pointer" size={24}/>
-                  <MessageCircle className="text-white/40 hover:text-brand-gold cursor-pointer" size={24}/>
+                  <Instagram className="text-white/40 hover:text-brand-bronze cursor-pointer" size={24}/>
+                  <Facebook className="text-white/40 hover:text-brand-bronze cursor-pointer" size={24}/>
+                  <MessageCircle className="text-white/40 hover:text-brand-bronze cursor-pointer" size={24}/>
                </div>
             </div>
           </motion.div>
@@ -674,13 +708,13 @@ const PromoPopup = () => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-brand-ebony/60 backdrop-blur-sm"
+          className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-brand-obsidian/60 backdrop-blur-sm"
         >
           <motion.div 
             initial={{ scale: 0.9, y: 20 }}
             animate={{ scale: 1, y: 0 }}
             exit={{ scale: 0.9, y: 20 }}
-            className="bg-brand-ebony text-brand-cream max-w-2xl w-full rounded-[3rem] overflow-hidden shadow-2xl relative flex flex-col md:flex-row border border-white/10"
+            className="bg-brand-obsidian text-brand-champagne max-w-2xl w-full rounded-[3rem] overflow-hidden shadow-premium relative flex flex-col md:flex-row border border-white/10"
           >
             <button 
               onClick={closePopup}
@@ -692,22 +726,22 @@ const PromoPopup = () => {
             <div className="md:w-1/2 aspect-[4/5] md:aspect-auto h-64 md:h-auto">
                <img 
                  src="https://images.unsplash.com/photo-1596462502278-27bfaf43399f?auto=format&fit=crop&q=80&w=600" 
-                 className="w-full h-full object-cover grayscale brightness-75" 
+                 className="w-full h-full object-cover grayscale brightness-50" 
                  alt="Promo" 
                />
             </div>
             
             <div className="md:w-1/2 p-10 md:p-12 flex flex-col justify-center">
-               <p className="micro-label text-brand-gold mb-4 tracking-[0.3em]">REJOIGNEZ L'EMPIRE</p>
+               <p className="micro-label text-brand-bronze mb-4 tracking-[0.3em]">REJOIGNEZ L'EMPIRE</p>
                <h2 className="luxury-text text-4xl mb-6">Offre de Bienvenue</h2>
-               <p className="text-brand-cream/60 mb-8 leading-relaxed text-sm">
-                 Inscrivez-vous à notre lettre d'information et recevez <strong>-10%</strong> sur votre premier rituel de soin.
+               <p className="text-brand-champagne/60 mb-8 leading-relaxed text-sm">
+                  Inscrivez-vous à notre lettre d'information et recevez <strong>-10%</strong> sur votre premier rituel de soin.
                </p>
                <div className="space-y-4">
                   <input 
                     type="email" 
                     placeholder="Votre email" 
-                    className="w-full bg-white/5 border border-white/10 rounded-full px-6 py-4 micro-label focus:outline-none focus:border-brand-gold text-white"
+                    className="w-full bg-white/5 border border-white/10 rounded-full px-6 py-4 micro-label focus:outline-none focus:border-brand-bronze text-white"
                   />
                   <button 
                     onClick={closePopup}
@@ -719,7 +753,7 @@ const PromoPopup = () => {
                     onClick={closePopup}
                     className="w-full text-[10px] opacity-40 uppercase tracking-widest hover:opacity-100 transition-opacity"
                   >
-                    Non merci, je préfère payer le prix fort
+                    Non merci, je prÃ©fÃ¨re payer le prix fort
                   </button>
                </div>
             </div>
@@ -745,34 +779,34 @@ const WhatsAppButton = () => (
 );
 
 const Footer = () => (
-  <footer className="bg-brand-ebony text-brand-cream pt-24 pb-12 px-6">
+  <footer className="bg-brand-obsidian text-brand-champagne pt-24 pb-12 px-6 border-t border-brand-bronze/10">
     <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-16 mb-24">
       <div className="lg:col-span-1">
-        <Link to="/" className="luxury-text text-3xl mb-8 block tracking-tighter text-brand-gold">PRÉCIEUSE EMPIRE</Link>
-        <p className="opacity-50 max-w-sm mb-10 leading-relaxed text-sm font-medium">
+        <Link to="/" className="luxury-text text-3xl mb-8 block tracking-tighter text-brand-bronze italic">PRÉCIEUSE EMPIRE</Link>
+        <p className="opacity-50 max-w-sm mb-10 leading-relaxed text-sm font-medium uppercase tracking-widest leading-relaxed">
           L'alliance sacrée entre les secrets ancestraux de la terre d'Afrique et l'innovation cosmétique moderne. Pour que chaque peau rayonne de sa propre lumière.
         </p>
         <div className="flex gap-4">
-          <a href="#" className="w-12 h-12 flex items-center justify-center border border-brand-cream/10 rounded-full hover:border-brand-gold hover:text-brand-gold transition-all">
+          <a href="#" className="w-12 h-12 flex items-center justify-center border border-brand-bronze/10 rounded-full hover:border-brand-bronze hover:text-brand-bronze transition-all">
             <Instagram size={18} />
           </a>
-          <a href="#" className="w-12 h-12 flex items-center justify-center border border-brand-cream/10 rounded-full hover:border-brand-gold hover:text-brand-gold transition-all">
+          <a href="#" className="w-12 h-12 flex items-center justify-center border border-brand-bronze/10 rounded-full hover:border-brand-bronze hover:text-brand-bronze transition-all">
             <Facebook size={18} />
           </a>
-          <a href="#" className="w-12 h-12 flex items-center justify-center border border-brand-cream/10 rounded-full hover:border-brand-gold hover:text-brand-gold transition-all">
+          <a href="#" className="w-12 h-12 flex items-center justify-center border border-brand-bronze/10 rounded-full hover:border-brand-bronze hover:text-brand-bronze transition-all">
             <Twitter size={18} />
           </a>
         </div>
       </div>
 
       <div>
-        <h4 className="micro-label font-bold text-brand-gold mb-10 tracking-[0.2em]">NAVIGATION</h4>
+        <h4 className="micro-label font-bold text-brand-bronze mb-10 tracking-[0.2em]">NAVIGATION</h4>
         <ul className="space-y-5">
           {["Accueil", "Catalogue", "Événements", "Routines", "À Propos"].map((item) => (
              <li key={item}>
                 <Link 
                   to={item === "Accueil" ? "/" : `/${item.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s/g, "-")}`}
-                  className="opacity-50 hover:opacity-100 hover:text-brand-gold transition-all text-sm flex items-center gap-2 group font-medium"
+                  className="opacity-50 hover:opacity-100 hover:text-brand-bronze transition-all text-sm flex items-center gap-2 group font-medium uppercase tracking-widest"
                 >
                    <ChevronRight size={12} className="opacity-0 group-hover:opacity-100 transition-opacity" /> {item}
                 </Link>
@@ -782,55 +816,55 @@ const Footer = () => (
       </div>
 
       <div>
-        <h4 className="micro-label font-bold text-brand-gold mb-10 tracking-[0.2em]">SERVICE CLIENT</h4>
+        <h4 className="micro-label font-bold text-brand-bronze mb-10 tracking-[0.2em]">SERVICE CLIENT</h4>
         <ul className="space-y-5">
-           <li className="flex items-start gap-4 opacity-50 group cursor-pointer hover:opacity-100">
-              <Phone size={18} className="text-brand-gold shrink-0" />
+           <li className="flex items-start gap-4 opacity-50 group cursor-pointer hover:opacity-100 transition-opacity">
+              <Phone size={18} className="text-brand-bronze shrink-0" />
               <div>
-                 <p className="text-xs font-bold mb-1">WhatsApp & Appels</p>
+                 <p className="text-[10px] font-bold mb-1 tracking-widest uppercase">WhatsApp & Appels</p>
                  <p className="text-sm">+229 0150824534</p>
               </div>
            </li>
-           <li className="flex items-start gap-4 opacity-50 group cursor-pointer hover:opacity-100">
-              <Mail size={18} className="text-brand-gold shrink-0" />
+           <li className="flex items-start gap-4 opacity-50 group cursor-pointer hover:opacity-100 transition-opacity">
+              <Mail size={18} className="text-brand-bronze shrink-0" />
               <div>
-                 <p className="text-xs font-bold mb-1">Email</p>
-                 <p className="text-sm">merveillesokenou12@gmail.com</p>
+                 <p className="text-[10px] font-bold mb-1 tracking-widest uppercase">Email</p>
+                 <p className="text-sm lowercase">merveillesokenou12@gmail.com</p>
               </div>
            </li>
            <li className="flex items-start gap-4 opacity-50">
-              <Sparkles size={18} className="text-brand-gold shrink-0" />
+              <Sparkles size={18} className="text-brand-bronze shrink-0" />
               <div>
-                 <p className="text-xs font-bold mb-1">Showroom</p>
-                 <p className="text-sm">Haie Vive, Cotonou, Bénin</p>
+                 <p className="text-[10px] font-bold mb-1 tracking-widest uppercase">Showroom</p>
+                 <p className="text-sm italic">Haie Vive, Cotonou, Bénin</p>
               </div>
            </li>
         </ul>
       </div>
 
       <div>
-        <h4 className="micro-label font-bold text-brand-gold mb-10 tracking-[0.2em]">L'EMPIRE NEWS</h4>
-        <p className="opacity-50 text-sm mb-8 leading-relaxed font-medium">
-           Recevez nos rituels secrets et nos offres privées en avant-première.
+        <h4 className="micro-label font-bold text-brand-bronze mb-10 tracking-[0.2em]">L'EMPIRE NEWS</h4>
+        <p className="opacity-50 text-xs mb-8 leading-relaxed font-medium uppercase tracking-widest">
+           Rejoignez l'élite et recevez nos secrets impériaux en avant-première.
         </p>
         <div className="relative">
            <input 
              type="email" 
-             placeholder="Votre email" 
-             className="w-full bg-brand-cream/5 border border-brand-cream/10 rounded-full px-6 py-4 text-sm focus:outline-none focus:border-brand-gold transition-colors text-white"
+             placeholder="VOTRE EMAIL" 
+             className="w-full bg-white/5 border border-white/10 rounded-full px-6 py-4 text-[10px] micro-label focus:outline-none focus:border-brand-bronze transition-colors text-white"
            />
-           <button className="absolute right-2 top-2 bottom-2 bg-brand-gold text-brand-ebony px-6 rounded-full hover:bg-brand-gold-muted transition-colors">
+           <button className="absolute right-2 top-2 bottom-2 bg-brand-bronze text-brand-obsidian px-6 rounded-full hover:bg-white transition-all shadow-premium">
               <ChevronRight size={20} />
            </button>
         </div>
       </div>
     </div>
-    <div className="max-w-7xl mx-auto pt-12 border-t border-brand-cream/5 flex flex-col md:flex-row justify-between items-center gap-8 opacity-40 text-[10px] tracking-widest font-medium">
+    <div className="max-w-7xl mx-auto pt-12 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-8 opacity-40 text-[10px] tracking-widest font-medium">
       <p>COPYRIGHT &copy; 2026 PRÉCIEUSE EMPIRE. TOUS DROITS RÉSERVÉS.</p>
       <div className="flex gap-8">
-         <a href="#" className="hover:text-brand-gold transition-colors">MENTIONS LÉGALES</a>
-         <a href="#" className="hover:text-brand-gold transition-colors">CGV</a>
-         <a href="#" className="hover:text-brand-gold transition-colors">CONFIDENTIALITÉ</a>
+         <a href="#" className="hover:text-brand-bronze transition-colors">MENTIONS LÉGALES</a>
+         <a href="#" className="hover:text-brand-bronze transition-colors">CGV</a>
+         <a href="#" className="hover:text-brand-bronze transition-colors">CONFIDENTIALITÉ</a>
       </div>
     </div>
   </footer>
@@ -845,27 +879,43 @@ const PlaceholderPage = ({ title }: { title: string }) => (
 );
 
 export default function App() {
+  const { design } = useDesign();
   const location = useLocation();
   const isAdminPath = location.pathname.startsWith("/admin");
 
   return (
-    <div className="min-h-screen font-sans selection:bg-brand-gold selection:text-white">
+    <div className={cn(
+      "min-h-screen font-sans overflow-x-hidden",
+      design === 'imperial' ? "bg-[#0A0A0A] text-[#E8D9C5]" : "bg-brand-obsidian text-brand-champagne selection:bg-brand-bronze selection:text-brand-obsidian"
+    )}>
       <Toaster position="top-right" />
       {!isAdminPath && <Navbar />}
-      {!isAdminPath && <PromoPopup />}
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/catalogue" element={<Catalog />} />
-        <Route path="/catalogue/:id" element={<ProductDetail />} />
-        <Route path="/evenements" element={<Events />} />
-        <Route path="/evenements/:id" element={<EventDetail />} />
-        <Route path="/routines" element={<Routines />} />
-        <Route path="/routines/:id" element={<RoutineDetail />} />
-        <Route path="/a-propos" element={<About />} />
-        <Route path="/favoris" element={<PlaceholderPage title="Vos Favoris" />} />
-        <Route path="/admin/*" element={<Admin />} />
-      </Routes>
-      {!isAdminPath && <Footer />}
+      {!isAdminPath && design !== 'imperial' && <PromoPopup />}
+      
+        <AnimatePresence mode="wait">
+          <motion.main
+            key={location.pathname}
+            initial={{ opacity: 0, y: 10, filter: "blur(10px)" }}
+            animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+            exit={{ opacity: 0, y: -10, filter: "blur(10px)" }}
+            transition={{ duration: 0.8, ease: [0.19, 1, 0.22, 1] }}
+          >
+            <Routes location={location}>
+              <Route path="/" element={<PageTransition><Home /></PageTransition>} />
+              <Route path="/catalogue" element={<PageTransition><Catalog /></PageTransition>} />
+              <Route path="/catalogue/:id" element={<PageTransition><ProductDetail /></PageTransition>} />
+              <Route path="/evenements" element={<PageTransition><Events /></PageTransition>} />
+              <Route path="/evenements/:id" element={<PageTransition><EventDetail /></PageTransition>} />
+              <Route path="/routines" element={<PageTransition><Routines /></PageTransition>} />
+              <Route path="/routines/:id" element={<PageTransition><RoutineDetail /></PageTransition>} />
+              <Route path="/a-propos" element={<PageTransition><About /></PageTransition>} />
+              <Route path="/favoris" element={<PageTransition><PlaceholderPage title="Vos Favoris" /></PageTransition>} />
+              <Route path="/admin/*" element={<PageTransition><Admin /></PageTransition>} />
+            </Routes>
+          </motion.main>
+        </AnimatePresence>
+
+      {!isAdminPath && design !== 'imperial' && <Footer />}
       {!isAdminPath && <WhatsAppButton />}
     </div>
   );

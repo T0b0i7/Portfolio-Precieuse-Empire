@@ -94,7 +94,7 @@ export function AdminMediaGallery() {
           <h1 className="luxury-text text-4xl mb-2">Galerie Média</h1>
           <p className="text-black/40 font-medium">La bibliothèque centrale de votre empire visuel.</p>
         </div>
-        <label className="bg-brand-ebony text-white h-14 px-8 rounded-2xl flex items-center justify-center gap-3 text-xs font-bold hover:bg-brand-gold hover:text-brand-ebony transition-all group shadow-xl cursor-pointer">
+        <label className="bg-brand-obsidian text-white h-14 px-8 rounded-2xl flex items-center justify-center gap-3 text-xs font-bold hover:bg-brand-bronze hover:text-brand-obsidian transition-all group shadow-xl cursor-pointer">
            <Plus size={20} /> TÉLÉVERSER UN MÉDIA
            <input type="file" className="hidden" accept="image/*" multiple onChange={handleFileUpload} />
         </label>
@@ -102,13 +102,13 @@ export function AdminMediaGallery() {
 
       <div className="bg-white p-4 rounded-[2rem] border border-black/5 flex flex-col md:flex-row gap-4 items-center">
         <div className="relative flex-1 group w-full">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-black/20 group-focus-within:text-brand-gold transition-colors" size={18} />
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-black/20 group-focus-within:text-brand-bronze transition-colors" size={18} />
           <input 
             type="text" 
             placeholder="Rechercher une image..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full bg-black/[0.02] border-none rounded-xl py-3 px-12 text-sm outline-none focus:ring-1 focus:ring-brand-gold/50 transition-all font-medium"
+            className="w-full bg-black/[0.02] border-none rounded-xl py-3 px-12 text-sm outline-none focus:ring-1 focus:ring-brand-bronze/50 transition-all font-medium"
           />
         </div>
         <div className="flex gap-2 overflow-x-auto no-scrollbar pb-2 md:pb-0 w-full md:w-auto">
@@ -118,7 +118,7 @@ export function AdminMediaGallery() {
               onClick={() => setFilter(f)}
               className={cn(
                 "px-6 py-3 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all whitespace-nowrap",
-                filter === f ? "bg-brand-gold text-brand-ebony" : "bg-black/[0.02] text-black/40 hover:bg-black/[0.05]"
+                filter === f ? "bg-brand-bronze text-brand-obsidian" : "bg-black/[0.02] text-black/40 hover:bg-black/[0.05]"
               )}
             >
               {f === 'all' ? 'TOUS' : f === 'products' ? 'Produits' : f === 'content' ? 'Articles' : 'Événements'}
@@ -145,8 +145,8 @@ export function AdminMediaGallery() {
               className="group aspect-square bg-white rounded-3xl border border-black/5 overflow-hidden relative shadow-sm hover:shadow-xl transition-all"
             >
               <img src={img.url} className="w-full h-full object-cover transition-transform group-hover:scale-110" />
-              <div className="absolute inset-0 bg-brand-ebony/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-3 p-4">
-                 <button onClick={() => handleCopyUrl(img.url)} className="p-3 bg-white/20 backdrop-blur-md rounded-xl text-white hover:bg-brand-gold hover:text-brand-ebony transition-all">
+              <div className="absolute inset-0 bg-brand-obsidian/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-3 p-4">
+                 <button onClick={() => handleCopyUrl(img.url)} className="p-3 bg-white/20 backdrop-blur-md rounded-xl text-white hover:bg-brand-bronze hover:text-brand-obsidian transition-all">
                     <Copy size={16} />
                  </button>
                  <button onClick={() => handleDelete(img.id)} className="p-3 bg-white/20 backdrop-blur-md rounded-xl text-white hover:bg-red-500 transition-all">

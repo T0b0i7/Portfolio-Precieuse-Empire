@@ -126,7 +126,7 @@ export function AdminCollaborators() {
 
   const getRoleConfig = (role: string) => {
     switch (role) {
-      case 'super_admin': return { label: 'SUPER ADMIN', color: 'text-brand-gold bg-brand-gold/10' };
+      case 'super_admin': return { label: 'SUPER ADMIN', color: 'text-brand-bronze bg-brand-bronze/10' };
       case 'commercial': return { label: 'COMMERCIAL', color: 'text-blue-500 bg-blue-50' };
       case 'editor': return { label: 'ÉDITEUR', color: 'text-purple-500 bg-purple-50' };
       case 'collaborator': return { label: 'COLLABORATEUR', color: 'text-black/40 bg-black/5' };
@@ -143,7 +143,7 @@ export function AdminCollaborators() {
         </div>
         <button 
           onClick={handleCreate}
-          className="bg-brand-ebony text-white h-14 px-8 rounded-2xl flex items-center justify-center gap-3 text-xs font-bold hover:bg-brand-gold hover:text-brand-ebony transition-all shadow-xl group shadow-black/10"
+          className="bg-brand-obsidian text-white h-14 px-8 rounded-2xl flex items-center justify-center gap-3 text-xs font-bold hover:bg-brand-bronze hover:text-brand-obsidian transition-all shadow-xl group shadow-black/10"
         >
           <UserPlus size={20} className="group-hover:scale-110 transition-transform" /> INVITER UN MEMBRE
         </button>
@@ -169,7 +169,7 @@ export function AdminCollaborators() {
 
                 <div className="flex items-center gap-6 mb-8">
                   <div className="relative group">
-                    <img src={member.image} className="w-20 h-20 rounded-[1.8rem] object-cover border-2 border-brand-gold/20 group-hover:border-brand-gold transition-all" />
+                    <img src={member.image} className="w-20 h-20 rounded-[1.8rem] object-cover border-2 border-brand-bronze/20 group-hover:border-brand-bronze transition-all" />
                     <div className={cn(
                       "absolute -bottom-1 -right-1 w-5 h-5 rounded-full border-4 border-white",
                       member.status === 'inactive' ? "bg-red-500" : "bg-emerald-500"
@@ -189,7 +189,7 @@ export function AdminCollaborators() {
                     onClick={() => handleEdit(member)}
                     className="flex flex-col items-center justify-center p-3 rounded-2xl bg-black/[0.02] hover:bg-black/[0.05] transition-all gap-1 group/btn"
                    >
-                      <Settings size={16} className="text-black/20 group-hover/btn:text-brand-gold" />
+                      <Settings size={16} className="text-black/20 group-hover/btn:text-brand-bronze" />
                       <span className="text-[9px] font-bold text-black/40 uppercase tracking-widest">Modifier</span>
                    </button>
                    <button 
@@ -222,7 +222,7 @@ export function AdminCollaborators() {
               onClick={handleCreate}
               className="bg-black/[0.02] p-8 rounded-[3rem] border-2 border-dashed border-black/5 flex flex-col items-center justify-center text-center gap-6 group hover:bg-black/[0.04] transition-all cursor-pointer"
             >
-               <div className="w-20 h-20 rounded-[2.5rem] bg-white border-2 border-dashed border-black/10 flex items-center justify-center text-black/10 group-hover:bg-brand-gold/10 group-hover:text-brand-gold group-hover:border-brand-gold/30 transition-all">
+               <div className="w-20 h-20 rounded-[2.5rem] bg-white border-2 border-dashed border-black/10 flex items-center justify-center text-black/10 group-hover:bg-brand-bronze/10 group-hover:text-brand-bronze group-hover:border-brand-bronze/30 transition-all">
                   <Mail size={32} />
                </div>
                <div>
@@ -244,7 +244,7 @@ export function AdminCollaborators() {
               animate={{ opacity: 1 }} 
               exit={{ opacity: 0 }} 
               onClick={() => setIsFormOpen(false)}
-              className="absolute inset-0 bg-brand-ebony/60 backdrop-blur-sm" 
+              className="absolute inset-0 bg-brand-obsidian/60 backdrop-blur-sm" 
             />
             <motion.div
               initial={{ opacity: 0, scale: 0.9, y: 30 }}
@@ -262,7 +262,7 @@ export function AdminCollaborators() {
                       required
                       value={formData.name}
                       onChange={e => setFormData({...formData, name: e.target.value})}
-                      className="w-full bg-black/5 border-none rounded-2xl p-4 text-sm outline-none focus:ring-1 focus:ring-brand-gold/50"
+                      className="w-full bg-black/5 border-none rounded-2xl p-4 text-sm outline-none focus:ring-1 focus:ring-brand-bronze/50"
                     />
                   </div>
                   <div>
@@ -272,7 +272,7 @@ export function AdminCollaborators() {
                       type="email"
                       value={formData.email}
                       onChange={e => setFormData({...formData, email: e.target.value})}
-                      className="w-full bg-black/5 border-none rounded-2xl p-4 text-sm outline-none focus:ring-1 focus:ring-brand-gold/50"
+                      className="w-full bg-black/5 border-none rounded-2xl p-4 text-sm outline-none focus:ring-1 focus:ring-brand-bronze/50"
                     />
                   </div>
                   <div className="grid grid-cols-2 gap-4">
@@ -281,7 +281,7 @@ export function AdminCollaborators() {
                       <select 
                         value={formData.role}
                         onChange={e => setFormData({...formData, role: e.target.value})}
-                        className="w-full bg-black/5 border-none rounded-2xl p-4 text-sm outline-none focus:ring-1 focus:ring-brand-gold/50"
+                        className="w-full bg-black/5 border-none rounded-2xl p-4 text-sm outline-none focus:ring-1 focus:ring-brand-bronze/50"
                       >
                         <option value="super_admin">Super Admin</option>
                         <option value="editor">Éditeur</option>
@@ -294,7 +294,7 @@ export function AdminCollaborators() {
                       <select 
                         value={formData.status}
                         onChange={e => setFormData({...formData, status: e.target.value})}
-                        className="w-full bg-black/5 border-none rounded-2xl p-4 text-sm outline-none focus:ring-1 focus:ring-brand-gold/50"
+                        className="w-full bg-black/5 border-none rounded-2xl p-4 text-sm outline-none focus:ring-1 focus:ring-brand-bronze/50"
                       >
                         <option value="active">Actif</option>
                         <option value="inactive">Inactif</option>
@@ -314,7 +314,7 @@ export function AdminCollaborators() {
                   <button 
                     type="submit"
                     disabled={isSubmitting}
-                    className="flex-1 bg-brand-ebony text-white h-14 rounded-2xl text-[10px] font-bold uppercase tracking-widest hover:bg-brand-gold hover:text-brand-ebony transition-all disabled:opacity-50 shadow-xl shadow-brand-gold/10"
+                    className="flex-1 bg-brand-obsidian text-white h-14 rounded-2xl text-[10px] font-bold uppercase tracking-widest hover:bg-brand-bronze hover:text-brand-obsidian transition-all disabled:opacity-50 shadow-xl shadow-brand-bronze/10"
                   >
                     {isSubmitting ? 'Enregistrement...' : (editingMember ? 'METTRE À JOUR' : 'INVITER')}
                   </button>

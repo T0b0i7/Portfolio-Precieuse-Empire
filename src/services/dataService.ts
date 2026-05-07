@@ -3,11 +3,14 @@ export interface Product {
   name: string;
   price: number;
   description: string;
+  long_description?: string;
   category: "visage" | "corps" | "maquillage" | "accessoires";
   main_image: string;
   images: string[];
   features: string[];
   is_bestseller: boolean;
+  badges?: string[];
+  skin_type?: string;
 }
 
 export interface Routine {
@@ -27,6 +30,66 @@ export interface Event {
   date: string;
   status: "upcoming" | "ongoing" | "finished";
 }
+
+export interface TeamMember {
+  id: string;
+  name: string;
+  role: string;
+  image: string;
+}
+
+export interface ValueItem {
+  id: string;
+  title: string;
+  desc: string;
+  icon?: string;
+}
+
+export interface TimelineEvent {
+  id: string;
+  date: string;
+  title: string;
+  desc: string;
+}
+
+export interface AboutContent {
+  hero_title: string;
+  hero_subtitle: string;
+  hero_image: string;
+  story_title: string;
+  story_text_1: string;
+  story_text_2: string;
+  mission_text: string;
+  values: ValueItem[];
+  team: TeamMember[];
+  timeline: TimelineEvent[];
+}
+
+const INITIAL_ABOUT: AboutContent = {
+  hero_title: "Sublimer l'Héritage.",
+  hero_subtitle: "\"La beauté africaine n'est pas une tendance, c'est une royauté qui mérite ses propres secrets.\"",
+  hero_image: "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?auto=format&fit=crop&q=80&w=2000",
+  story_title: "Notre Histoire",
+  story_text_1: "Tout a commencé par une simple observation : le marché regorgeait de produits inadaptés aux besoins spécifiques des peaux mélanines vivant sous le climat tropical.",
+  story_text_2: "Passionnée par les recettes de ma grand-mère et armée d'une formation en cosmétologie, j'ai commencé à formuler mes propres soins dans ma cuisine à Cotonou. Ce qui était un passe-temps est devenu une mission : créer un véritable Empire du soin.",
+  mission_text: "\"Donner à chaque femme les clés d'une beauté autonome, naturelle et royale. Nous ne vendons pas des crèmes, nous partageons un héritage de confiance.\"",
+  values: [
+    { id: "1", title: "Naturel", desc: "Des ingrédients hérités de la terre africaine, sans compromis sur la pureté.", icon: "Sparkles" },
+    { id: "2", title: "Femme Africaine", desc: "Célébrer et sublimer toutes les nuances de peaux mélanines.", icon: "Heart" },
+    { id: "3", title: "Qualité", desc: "L'excellence artisanale alliée à la rigueur scientifique.", icon: "Award" },
+    { id: "4", title: "Proximité", desc: "Une écoute active et des conseils personnalisés pour chaque cliente.", icon: "Globe" },
+  ],
+  team: [
+    { id: "1", name: "Mlle Précieuse", role: "Fondatrice & CEO", image: "https://images.unsplash.com/photo-1531123897727-8f129e16fd3c?auto=format&fit=crop&q=80&w=400" },
+    { id: "2", name: "Sarah G.", role: "Responsable Commerciale", image: "https://images.unsplash.com/photo-1506272517105-4f29bc952dd6?auto=format&fit=crop&q=80&w=400" },
+    { id: "3", name: "Awa D.", role: "Experte Cosmétologue", image: "https://images.unsplash.com/photo-1589156229687-496a31ad1d1f?auto=format&fit=crop&q=80&w=400" },
+  ],
+  timeline: [
+    { id: "1", date: "2022", title: "L'Étincelle", desc: "Premiers tests de formulation artisanale au karité pur." },
+    { id: "2", date: "2023", title: "Le Lancement", desc: "Naissance officielle de Précieuse Empire et premier showroom." },
+    { id: "3", date: "2024", title: "L'Empire s'étend", desc: "Lancement de la plateforme digitale et livraison internationale." }
+  ]
+};
 
 const INITIAL_PRODUCTS: Product[] = [
   {
@@ -105,10 +168,27 @@ const INITIAL_EVENTS: Event[] = [
   }
 ];
 
+export interface Testimonial {
+  id: string;
+  author: string;
+  content: string;
+  rating: number;
+  date: string;
+  approved: boolean;
+}
+
+const INITIAL_TESTIMONIALS: Testimonial[] = [
+  { id: "1", author: "Awa K.", content: "Le sérum précieux a transformé mon grain de peau. Je ne m'en passe plus !", rating: 5, date: "2024-03-01", approved: true },
+  { id: "2", author: "Mariam D.", content: "Livraison rapide à Cotonou et produits d'une qualité rare. Bravo Précieuse Empire.", rating: 5, date: "2024-03-05", approved: true },
+  { id: "3", author: "Fatou B.", content: "Enfin une marque qui comprend les besoins des peaux melaninées.", rating: 5, date: "2024-03-10", approved: true }
+];
+
 class DataService {
   private products: Product[] = [];
   private routines: Routine[] = [];
   private events: Event[] = [];
+  private about: AboutContent = INITIAL_ABOUT;
+  private testimonials: Testimonial[] = [];
 
   constructor() {
     this.loadData();
@@ -118,16 +198,22 @@ class DataService {
     const savedProducts = localStorage.getItem("pe_products");
     const savedRoutines = localStorage.getItem("pe_routines");
     const savedEvents = localStorage.getItem("pe_events");
+    const savedAbout = localStorage.getItem("pe_about");
+    const savedTestimonials = localStorage.getItem("pe_testimonials");
 
     this.products = savedProducts ? JSON.parse(savedProducts) : INITIAL_PRODUCTS;
     this.routines = savedRoutines ? JSON.parse(savedRoutines) : INITIAL_ROUTINES;
     this.events = savedEvents ? JSON.parse(savedEvents) : INITIAL_EVENTS;
+    this.about = savedAbout ? JSON.parse(savedAbout) : INITIAL_ABOUT;
+    this.testimonials = savedTestimonials ? JSON.parse(savedTestimonials) : INITIAL_TESTIMONIALS;
   }
 
   private saveData() {
     localStorage.setItem("pe_products", JSON.stringify(this.products));
     localStorage.setItem("pe_routines", JSON.stringify(this.routines));
     localStorage.setItem("pe_events", JSON.stringify(this.events));
+    localStorage.setItem("pe_about", JSON.stringify(this.about));
+    localStorage.setItem("pe_testimonials", JSON.stringify(this.testimonials));
   }
 
   // Generic methods
@@ -139,6 +225,36 @@ class DataService {
   
   async getEvents() { return this.events; }
   async getEventById(id: string) { return this.events.find(e => e.id === id); }
+
+  async getAbout() { return this.about; }
+  async updateAbout(updates: Partial<AboutContent>) {
+    this.about = { ...this.about, ...updates };
+    this.saveData();
+    return this.about;
+  }
+
+  async getTestimonials() { return this.testimonials; }
+  async addTestimonial(testimonial: Omit<Testimonial, "id" | "date" | "approved">) {
+    const newTestimonial: Testimonial = {
+      ...testimonial,
+      id: Math.random().toString(36).substr(2, 9),
+      date: new Date().toISOString(),
+      approved: false // Require admin approval by default
+    };
+    this.testimonials.push(newTestimonial);
+    this.saveData();
+    return newTestimonial;
+  }
+
+  async toggleTestimonialApproval(id: string) {
+    this.testimonials = this.testimonials.map(t => t.id === id ? { ...t, approved: !t.approved } : t);
+    this.saveData();
+  }
+
+  async deleteTestimonial(id: string) {
+    this.testimonials = this.testimonials.filter(t => t.id !== id);
+    this.saveData();
+  }
 
   // Product methods
   async addProduct(product: Product) {

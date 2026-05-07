@@ -170,7 +170,7 @@ export function AdminProducts({ searchQuery: globalSearch }: { searchQuery?: str
         </div>
         <button 
           onClick={handleCreate}
-          className="bg-brand-ebony text-white h-14 px-8 rounded-2xl flex items-center justify-center gap-3 text-xs font-bold hover:bg-brand-gold hover:text-brand-ebony transition-all shadow-xl shadow-black/10 group"
+          className="bg-brand-obsidian text-white h-14 px-8 rounded-2xl flex items-center justify-center gap-3 text-xs font-bold hover:bg-brand-bronze hover:text-brand-obsidian transition-all shadow-xl shadow-black/10 group"
         >
           <Plus size={20} className="group-hover:rotate-90 transition-transform" /> AJOUTER UN PRODUIT
         </button>
@@ -178,27 +178,27 @@ export function AdminProducts({ searchQuery: globalSearch }: { searchQuery?: str
 
       <div className="bg-white p-4 rounded-[2rem] border border-black/5 flex flex-col md:flex-row gap-4 items-center">
         <div className="relative flex-1 group w-full">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-black/20 group-focus-within:text-brand-gold transition-colors" size={18} />
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-black/20 group-focus-within:text-brand-bronze transition-colors" size={18} />
           <input 
             type="text" 
             placeholder="Rechercher par nom..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full bg-black/[0.02] border-none rounded-xl py-3 px-12 text-sm outline-none focus:ring-1 focus:ring-brand-gold/50 transition-all font-medium"
+            className="w-full bg-black/[0.02] border-none rounded-xl py-3 px-12 text-sm outline-none focus:ring-1 focus:ring-brand-bronze/50 transition-all font-medium"
           />
         </div>
         <div className="flex gap-2 overflow-x-auto no-scrollbar pb-2 md:pb-0 w-full md:w-auto">
           <select 
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value as any)}
-            className="bg-black/[0.02] border-none rounded-xl py-3 px-6 text-[10px] font-bold uppercase tracking-widest outline-none focus:ring-1 focus:ring-brand-gold/50"
+            className="bg-black/[0.02] border-none rounded-xl py-3 px-6 text-[10px] font-bold uppercase tracking-widest outline-none focus:ring-1 focus:ring-brand-bronze/50"
           >
             <option value="name">Trier par Nom</option>
             <option value="price">Trier par Prix</option>
           </select>
           <button 
             onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
-            className="p-3 bg-black/[0.02] rounded-xl text-black/40 hover:text-brand-gold transition-colors"
+            className="p-3 bg-black/[0.02] rounded-xl text-black/40 hover:text-brand-bronze transition-colors"
           >
             <Filter size={18} className={cn(sortOrder === 'desc' && "rotate-180")} />
           </button>
@@ -208,7 +208,7 @@ export function AdminProducts({ searchQuery: globalSearch }: { searchQuery?: str
               onClick={() => setSelectedCategory(cat)}
               className={cn(
                 "px-6 py-3 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all whitespace-nowrap",
-                selectedCategory === cat ? "bg-brand-gold text-brand-ebony" : "bg-black/[0.02] text-black/40 hover:bg-black/[0.05]"
+                selectedCategory === cat ? "bg-brand-bronze text-brand-obsidian" : "bg-black/[0.02] text-black/40 hover:bg-black/[0.05]"
               )}
             >
               {cat === 'all' ? 'TOUS' : cat.toUpperCase()}
@@ -276,13 +276,13 @@ export function AdminProducts({ searchQuery: globalSearch }: { searchQuery?: str
                     <a 
                       href={`/shop?id=${p.id}`}
                       target="_blank"
-                      className="p-3 bg-black/5 hover:bg-brand-gold/10 hover:text-brand-gold rounded-xl transition-all" title="Voir sur le site"
+                      className="p-3 bg-black/5 hover:bg-brand-bronze/10 hover:text-brand-bronze rounded-xl transition-all" title="Voir sur le site"
                     >
                       <Eye size={16} />
                     </a>
                     <button 
                       onClick={() => handleEdit(p)}
-                      className="p-3 bg-black/5 hover:bg-brand-gold/10 hover:text-brand-gold rounded-xl transition-all" title="Modifier"
+                      className="p-3 bg-black/5 hover:bg-brand-bronze/10 hover:text-brand-bronze rounded-xl transition-all" title="Modifier"
                     >
                       <Edit2 size={16} />
                     </button>
@@ -307,7 +307,7 @@ export function AdminProducts({ searchQuery: globalSearch }: { searchQuery?: str
               initial={{ opacity: 0 }} 
               animate={{ opacity: 1 }} 
               exit={{ opacity: 0 }} 
-              className="absolute inset-0 bg-brand-ebony/60 backdrop-blur-sm" 
+              className="absolute inset-0 bg-brand-obsidian/60 backdrop-blur-sm" 
               onClick={() => setIsFormOpen(false)} 
             />
             <motion.div 
@@ -335,7 +335,7 @@ export function AdminProducts({ searchQuery: globalSearch }: { searchQuery?: str
                          required
                          value={formData.name}
                          onChange={e => setFormData({ ...formData, name: e.target.value })}
-                         type="text" className="bg-black/[0.02] border-none rounded-2xl py-4 px-6 outline-none focus:ring-1 focus:ring-brand-gold/50 font-medium" 
+                         type="text" className="bg-black/[0.02] border-none rounded-2xl py-4 px-6 outline-none focus:ring-1 focus:ring-brand-bronze/50 font-medium" 
                        />
                     </div>
                     <div className="flex flex-col gap-2">
@@ -345,7 +345,7 @@ export function AdminProducts({ searchQuery: globalSearch }: { searchQuery?: str
                          value={formData.short_desc}
                          onChange={e => setFormData({ ...formData, short_desc: e.target.value })}
                          rows={2}
-                         className="bg-black/[0.02] border-none rounded-2xl py-4 px-6 outline-none focus:ring-1 focus:ring-brand-gold/50 font-medium resize-none" 
+                         className="bg-black/[0.02] border-none rounded-2xl py-4 px-6 outline-none focus:ring-1 focus:ring-brand-bronze/50 font-medium resize-none" 
                        />
                     </div>
                     <div className="flex flex-col gap-2">
@@ -355,7 +355,7 @@ export function AdminProducts({ searchQuery: globalSearch }: { searchQuery?: str
                          value={formData.long_description}
                          onChange={e => setFormData({ ...formData, long_description: e.target.value })}
                          rows={4}
-                         className="bg-black/[0.02] border-none rounded-2xl py-4 px-6 outline-none focus:ring-1 focus:ring-brand-gold/50 font-medium resize-none shadow-inner" 
+                         className="bg-black/[0.02] border-none rounded-2xl py-4 px-6 outline-none focus:ring-1 focus:ring-brand-bronze/50 font-medium resize-none shadow-inner" 
                        />
                     </div>
                     <div className="grid grid-cols-2 gap-6">
@@ -366,7 +366,7 @@ export function AdminProducts({ searchQuery: globalSearch }: { searchQuery?: str
                             type="number" 
                             value={formData.price}
                             onChange={e => setFormData({ ...formData, price: Number(e.target.value) })}
-                            className="bg-black/[0.02] border-none rounded-2xl py-4 px-6 outline-none focus:ring-1 focus:ring-brand-gold/50 font-medium" 
+                            className="bg-black/[0.02] border-none rounded-2xl py-4 px-6 outline-none focus:ring-1 focus:ring-brand-bronze/50 font-medium" 
                           />
                        </div>
                        <div className="flex flex-col gap-2">
@@ -376,7 +376,7 @@ export function AdminProducts({ searchQuery: globalSearch }: { searchQuery?: str
                             type="number" 
                             value={formData.stock}
                             onChange={e => setFormData({ ...formData, stock: Number(e.target.value) })}
-                            className="bg-black/[0.02] border-none rounded-2xl py-4 px-6 outline-none focus:ring-1 focus:ring-brand-gold/50 font-medium" 
+                            className="bg-black/[0.02] border-none rounded-2xl py-4 px-6 outline-none focus:ring-1 focus:ring-brand-bronze/50 font-medium" 
                           />
                        </div>
                     </div>
@@ -386,7 +386,7 @@ export function AdminProducts({ searchQuery: globalSearch }: { searchQuery?: str
                           <select 
                             value={formData.category}
                             onChange={e => setFormData({ ...formData, category: e.target.value })}
-                            className="bg-black/[0.02] border-none rounded-2xl py-4 px-6 outline-none focus:ring-1 focus:ring-brand-gold/50"
+                            className="bg-black/[0.02] border-none rounded-2xl py-4 px-6 outline-none focus:ring-1 focus:ring-brand-bronze/50"
                           >
                              <option value="Soins visage">Soins visage</option>
                              <option value="Corps">Corps</option>
@@ -398,7 +398,7 @@ export function AdminProducts({ searchQuery: globalSearch }: { searchQuery?: str
                           <select 
                             value={formData.skin_type}
                             onChange={e => setFormData({ ...formData, skin_type: e.target.value })}
-                            className="bg-black/[0.02] border-none rounded-2xl py-4 px-6 outline-none focus:ring-1 focus:ring-brand-gold/50"
+                            className="bg-black/[0.02] border-none rounded-2xl py-4 px-6 outline-none focus:ring-1 focus:ring-brand-bronze/50"
                           >
                              <option value="Tous types">Tous types</option>
                              <option value="Peau grasse">Peau grasse</option>
@@ -425,7 +425,7 @@ export function AdminProducts({ searchQuery: globalSearch }: { searchQuery?: str
                              }}
                              className={cn(
                                "px-4 py-2 rounded-xl text-[8px] font-bold uppercase tracking-widest border transition-all",
-                               formData.badges.includes(badge) ? "bg-brand-gold border-brand-gold text-brand-ebony" : "border-black/5 text-black/40"
+                               formData.badges.includes(badge) ? "bg-brand-bronze border-brand-bronze text-brand-obsidian" : "border-black/5 text-black/40"
                              )}
                            >
                              {badge}
@@ -439,7 +439,7 @@ export function AdminProducts({ searchQuery: globalSearch }: { searchQuery?: str
                          type="datetime-local" 
                          value={formData.planned_at}
                          onChange={e => setFormData({ ...formData, planned_at: e.target.value })}
-                         className="bg-black/[0.02] border-none rounded-2xl py-4 px-6 outline-none focus:ring-1 focus:ring-brand-gold/50 font-medium" 
+                         className="bg-black/[0.02] border-none rounded-2xl py-4 px-6 outline-none focus:ring-1 focus:ring-brand-bronze/50 font-medium" 
                        />
                     </div>
                     <div className="flex flex-col gap-2">
@@ -447,7 +447,7 @@ export function AdminProducts({ searchQuery: globalSearch }: { searchQuery?: str
                        <select 
                          value={formData.status}
                          onChange={e => setFormData({ ...formData, status: e.target.value })}
-                         className="bg-black/[0.02] border-none rounded-2xl py-4 px-6 outline-none focus:ring-1 focus:ring-brand-gold/50"
+                         className="bg-black/[0.02] border-none rounded-2xl py-4 px-6 outline-none focus:ring-1 focus:ring-brand-bronze/50"
                        >
                           <option value="visible">Visible</option>
                           <option value="hidden">Masqué</option>
@@ -467,11 +467,11 @@ export function AdminProducts({ searchQuery: globalSearch }: { searchQuery?: str
                             >
                               <Trash2 size={12} />
                             </button>
-                            {i === 0 && <span className="absolute bottom-2 left-2 px-2 py-1 bg-brand-gold text-brand-ebony text-[8px] font-bold rounded-md">PRINCIPALE</span>}
+                            {i === 0 && <span className="absolute bottom-2 left-2 px-2 py-1 bg-brand-bronze text-brand-obsidian text-[8px] font-bold rounded-md">PRINCIPALE</span>}
                          </div>
                        ))}
-                       <label className="aspect-square border-2 border-dashed border-black/10 rounded-3xl flex flex-col items-center justify-center p-4 group cursor-pointer hover:border-brand-gold/30 transition-all bg-black/[0.01]">
-                          <Plus size={24} className="text-black/10 group-hover:text-brand-gold/30" />
+                       <label className="aspect-square border-2 border-dashed border-black/10 rounded-3xl flex flex-col items-center justify-center p-4 group cursor-pointer hover:border-brand-bronze/30 transition-all bg-black/[0.01]">
+                          <Plus size={24} className="text-black/10 group-hover:text-brand-bronze/30" />
                           <p className="text-[8px] font-bold text-black/20 mt-2 uppercase">Ajouter</p>
                           <input type="file" className="hidden" accept="image/*" multiple onChange={handleFileUpload} />
                        </label>
@@ -499,7 +499,7 @@ export function AdminProducts({ searchQuery: globalSearch }: { searchQuery?: str
                   <button 
                     type="submit"
                     disabled={isSubmitting}
-                    className="bg-brand-ebony text-white flex items-center justify-center px-10 h-14 rounded-2xl text-[10px] font-bold uppercase tracking-widest hover:bg-brand-gold hover:text-brand-ebony transition-all shadow-xl disabled:opacity-50"
+                    className="bg-brand-obsidian text-white flex items-center justify-center px-10 h-14 rounded-2xl text-[10px] font-bold uppercase tracking-widest hover:bg-brand-bronze hover:text-brand-obsidian transition-all shadow-xl disabled:opacity-50"
                   >
                     {isSubmitting ? 'ENREGISTREMENT...' : (editingProduct ? 'METTRE À JOUR' : 'ENREGISTRER LE PRODUIT')}
                   </button>

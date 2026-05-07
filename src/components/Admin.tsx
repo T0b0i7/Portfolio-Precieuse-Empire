@@ -18,6 +18,8 @@ import {
   ChevronRight,
   Sun,
   Moon,
+  PenTool,
+  Sparkles,
   LayoutDashboard,
   ShoppingBag,
 } from 'lucide-react';
@@ -32,8 +34,10 @@ import { AdminContent } from './Admin/Content';
 import { AdminCollaborators } from './Admin/Collaborators';
 import { AdminTestimonials } from './Admin/Testimonials';
 import { AdminMediaGallery } from './Admin/MediaGallery';
+import { AdminStudio } from './Admin/Studio';
+import { AdminAbout } from './Admin/About';
 
-type AdminView = 'dashboard' | 'products' | 'events' | 'content' | 'testimonials' | 'gallery' | 'tasks' | 'collaborators' | 'settings';
+type AdminView = 'dashboard' | 'products' | 'events' | 'content' | 'testimonials' | 'gallery' | 'tasks' | 'collaborators' | 'settings' | 'studio' | 'about';
 
 export default function Admin() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -79,9 +83,11 @@ export default function Admin() {
 
   const menuItems = [
     { id: 'dashboard', label: 'Vue d\'Ensemble', icon: LayoutDashboard, roles: ['super_admin', 'editor', 'commercial', 'collaborator'] },
+    { id: 'studio', label: 'Studio Créatif AI', icon: Sparkles, roles: ['super_admin', 'editor'] },
     { id: 'products', label: 'Catalogue Produits', icon: ShoppingBag, roles: ['super_admin', 'commercial', 'editor'] },
     { id: 'events', label: 'Ateliers & Événements', icon: Calendar, roles: ['super_admin', 'editor'] },
     { id: 'content', label: 'Articles & Routines', icon: FileText, roles: ['super_admin', 'editor'] },
+    { id: 'about', label: 'Gestion Héritage', icon: PenTool, roles: ['super_admin', 'editor'] },
     { id: 'testimonials', label: 'Avis Clients', icon: BarChart3, roles: ['super_admin', 'editor'] },
     { id: 'gallery', label: 'Galerie Média', icon: Package, roles: ['super_admin', 'editor'] },
     { id: 'tasks', label: 'Missions Équipe', icon: CheckSquare, roles: ['super_admin', 'editor', 'commercial', 'collaborator'] },
@@ -103,10 +109,10 @@ export default function Admin() {
         <div className={cn("flex items-center gap-4 overflow-hidden transition-all", sidebarCollapsed ? "w-0 opacity-0" : "w-full opacity-100")}>
           <div className="flex flex-col">
             <span className="luxury-text text-xl tracking-tighter text-white">PRÉCIEUSE</span>
-            <span className="text-[10px] uppercase font-bold tracking-[0.3em] text-brand-gold opacity-80 whitespace-nowrap">Back-Office</span>
+            <span className="text-[10px] uppercase font-bold tracking-[0.3em] text-brand-bronze opacity-80 whitespace-nowrap">Back-Office</span>
           </div>
         </div>
-        {sidebarCollapsed && <span className="luxury-text text-2xl text-brand-gold mx-auto">P</span>}
+        {sidebarCollapsed && <span className="luxury-text text-2xl text-brand-bronze mx-auto">P</span>}
       </div>
 
       <nav className="flex-1 px-3 space-y-1 mt-4 overflow-y-auto overflow-x-hidden no-scrollbar">
@@ -120,7 +126,7 @@ export default function Admin() {
             className={cn(
               "w-full flex items-center gap-4 px-4 py-3.5 rounded-xl transition-all group relative",
               currentView === item.id 
-                ? "bg-brand-gold text-brand-ebony font-bold shadow-lg shadow-brand-gold/20" 
+                ? "bg-brand-bronze text-brand-obsidian font-bold shadow-lg shadow-brand-bronze/20" 
                 : "text-white/60 hover:text-white hover:bg-white/5"
             )}
             title={sidebarCollapsed ? item.label : undefined}
@@ -133,7 +139,7 @@ export default function Admin() {
               {item.label}
             </span>
             {currentView === item.id && !sidebarCollapsed && (
-              <motion.div layoutId="nav-pill" className="absolute right-2 w-1.5 h-1.5 rounded-full bg-brand-ebony/40" />
+              <motion.div layoutId="nav-pill" className="absolute right-2 w-1.5 h-1.5 rounded-full bg-brand-obsidian/40" />
             )}
           </button>
         ))}
@@ -141,11 +147,11 @@ export default function Admin() {
 
       <div className="p-4 border-t border-white/10">
         <div className={cn("flex items-center gap-3 p-3 rounded-2xl bg-white/5 mb-4 transition-all", sidebarCollapsed && "justify-center p-2")}>
-           <img src={user.image} className="w-10 h-10 rounded-xl object-cover border border-brand-gold/30 shrink-0" />
+           <img src={user.image} className="w-10 h-10 rounded-xl object-cover border border-brand-bronze/30 shrink-0" />
            {!sidebarCollapsed && (
              <div className="flex flex-col min-w-0">
                <span className="text-sm font-bold truncate text-white">{user.name}</span>
-               <span className="text-[10px] uppercase tracking-wider text-brand-gold">{user.role?.replace('_', ' ')}</span>
+               <span className="text-[10px] uppercase tracking-wider text-brand-bronze">{user.role?.replace('_', ' ')}</span>
              </div>
            )}
         </div>
@@ -166,7 +172,7 @@ export default function Admin() {
       <aside 
         className={cn(
           "hidden lg:flex flex-col transition-all duration-300 sticky top-0 h-screen z-50 border-r",
-          isDarkMode ? "bg-black border-white/5" : "bg-brand-ebony border-white/5",
+          isDarkMode ? "bg-black border-white/5" : "bg-brand-obsidian border-white/5",
           sidebarCollapsed ? "w-20" : "w-72"
         )}
       >
@@ -190,7 +196,7 @@ export default function Admin() {
       <motion.aside
         initial={false}
         animate={{ x: isMobileMenuOpen ? 0 : -300 }}
-        className="fixed top-0 bottom-0 left-0 w-72 bg-brand-ebony z-[70] flex flex-col lg:hidden"
+        className="fixed top-0 bottom-0 left-0 w-72 bg-brand-obsidian z-[70] flex flex-col lg:hidden"
       >
         <SidebarContent />
       </motion.aside>
@@ -213,12 +219,12 @@ export default function Admin() {
              </button>
              
              <div className="relative group w-full max-w-xs sm:max-w-md hidden sm:block">
-               <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-black/30 group-focus-within:text-brand-gold transition-colors" size={18} />
+               <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-black/30 group-focus-within:text-brand-bronze transition-colors" size={18} />
                <input 
                  type="text" 
                  placeholder="Recherche..."
                  className={cn(
-                   "w-full border-none rounded-2xl py-2.5 px-12 text-xs outline-none focus:ring-1 focus:ring-brand-gold/50 transition-all font-medium",
+                   "w-full border-none rounded-2xl py-2.5 px-12 text-xs outline-none focus:ring-1 focus:ring-brand-bronze/50 transition-all font-medium",
                    isDarkMode ? "bg-white/5 text-white placeholder:text-white/20" : "bg-black/5 text-black placeholder:text-black/30"
                  )}
                />
@@ -230,7 +236,7 @@ export default function Admin() {
                onClick={() => setIsDarkMode(!isDarkMode)}
                className={cn(
                  "p-2.5 rounded-xl transition-all flex items-center justify-center",
-                 isDarkMode ? "bg-white/5 text-brand-gold hover:bg-white/10" : "bg-black/5 text-black/60 hover:bg-black/10"
+                 isDarkMode ? "bg-white/5 text-brand-bronze hover:bg-white/10" : "bg-black/5 text-black/60 hover:bg-black/10"
                )}
                title={isDarkMode ? "Passer en mode clair" : "Passer en mode sombre"}
              >
@@ -248,7 +254,7 @@ export default function Admin() {
                >
                  <Bell size={18} />
                  {notifications.length > 0 && (
-                   <span className="absolute top-2.5 right-2.5 w-2 h-2 bg-brand-gold rounded-full border-2 border-white" />
+                   <span className="absolute top-2.5 right-2.5 w-2 h-2 bg-brand-bronze rounded-full border-2 border-white" />
                  )}
                </button>
 
@@ -267,13 +273,13 @@ export default function Admin() {
                      >
                        <div className="p-6 border-b border-black/5 flex items-center justify-between">
                          <h3 className="font-bold text-[10px] uppercase tracking-widest text-black/40">Notifications</h3>
-                         <button onClick={() => setNotifications([])} className="text-[10px] text-brand-gold font-bold hover:underline">TOUT LIRE</button>
+                         <button onClick={() => setNotifications([])} className="text-[10px] text-brand-bronze font-bold hover:underline">TOUT LIRE</button>
                        </div>
                        <div className="max-h-96 overflow-y-auto no-scrollbar pb-4">
                          {notifications.map(n => (
                            <div key={n.id} className="p-5 hover:bg-black/5 transition-colors cursor-pointer border-b border-black/5 last:border-0">
                              <div className="flex justify-between mb-1">
-                               <p className="text-[10px] font-bold text-brand-gold uppercase tracking-widest">{n.title}</p>
+                               <p className="text-[10px] font-bold text-brand-bronze uppercase tracking-widest">{n.title}</p>
                                <span className="text-[8px] text-black/30 font-bold uppercase">{n.time}</span>
                              </div>
                              <p className="text-xs text-black/60 leading-relaxed font-medium">{n.message}</p>
@@ -288,7 +294,7 @@ export default function Admin() {
                  )}
                </AnimatePresence>
              </div>
-             <a href="/" target="_blank" className="bg-brand-ebony text-white flex items-center justify-center w-12 h-12 lg:w-auto lg:px-6 rounded-xl gap-3 text-xs font-bold hover:bg-brand-gold hover:text-brand-ebony transition-all shadow-lg shadow-black/10">
+             <a href="/" target="_blank" className="bg-brand-obsidian text-white flex items-center justify-center w-12 h-12 lg:w-auto lg:px-6 rounded-xl gap-3 text-xs font-bold hover:bg-brand-bronze hover:text-brand-obsidian transition-all shadow-lg shadow-black/10">
                <span className="hidden lg:inline">SITE VITRINE</span> <ExternalLink size={16} />
              </a>
            </div>
@@ -305,6 +311,7 @@ export default function Admin() {
                className="max-w-7xl mx-auto"
              >
                {currentView === 'dashboard' && <AdminDashboard user={user} />}
+               {currentView === 'studio' && <AdminStudio />}
                {currentView === 'products' && <AdminProducts />}
                {currentView === 'tasks' && <AdminTasks user={user} />}
                {currentView === 'settings' && <AdminSettings />}
@@ -313,6 +320,7 @@ export default function Admin() {
                {currentView === 'testimonials' && <AdminTestimonials />}
                {currentView === 'gallery' && <AdminMediaGallery />}
                {currentView === 'collaborators' && <AdminCollaborators />}
+               {currentView === 'about' && <AdminAbout />}
              </motion.div>
            </AnimatePresence>
         </div>

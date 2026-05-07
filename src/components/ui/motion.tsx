@@ -87,6 +87,40 @@ export const Reveal = ({
 };
 
 /**
+ * Global Page Transition Wrapper
+ */
+export const PageTransition = ({ children }: { children: React.ReactNode }) => {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -20 }}
+      transition={{ 
+        duration: 0.8, 
+        ease: [0.16, 1, 0.3, 1] 
+      }}
+    >
+      {children}
+    </motion.div>
+  );
+};
+
+/**
+ * Cinematic Parallax Effect
+ */
+export const Parallax = ({ children, offset = 50 }: { children: React.ReactNode, offset?: number }) => {
+  return (
+    <motion.div
+      whileInView={{ y: [offset, -offset] }}
+      viewport={{ once: false }}
+      transition={{ ease: "linear" }}
+    >
+      {children}
+    </motion.div>
+  );
+};
+
+/**
  * Cinematic Image (UI LORA Influence)
  * High dynamic range entrance for images.
  */

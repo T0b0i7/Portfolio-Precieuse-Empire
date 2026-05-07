@@ -147,7 +147,7 @@ export function AdminContent() {
 
   const types = [
     { id: 'article', label: 'ARTICLES', icon: FileText, color: 'text-blue-500', bg: 'bg-blue-50' },
-    { id: 'promo', label: 'PROMOTIONS', icon: Sparkles, color: 'text-brand-gold', bg: 'bg-brand-gold/10' },
+    { id: 'promo', label: 'PROMOTIONS', icon: Sparkles, color: 'text-brand-bronze', bg: 'bg-brand-bronze/10' },
     { id: 'routine', label: 'ROUTINES', icon: Star, color: 'text-purple-500', bg: 'bg-purple-50' },
   ];
 
@@ -160,7 +160,7 @@ export function AdminContent() {
         </div>
         <button 
           onClick={handleCreate}
-          className="bg-brand-ebony text-white h-14 px-8 rounded-2xl flex items-center justify-center gap-3 text-xs font-bold hover:bg-brand-gold hover:text-brand-ebony transition-all shadow-xl group"
+          className="bg-brand-obsidian text-white h-14 px-8 rounded-2xl flex items-center justify-center gap-3 text-xs font-bold hover:bg-brand-bronze hover:text-brand-obsidian transition-all shadow-xl group"
         >
           <Plus size={20} className="group-hover:rotate-90 transition-transform" /> CRÉER UN CONTENU
         </button>
@@ -174,7 +174,7 @@ export function AdminContent() {
               onClick={() => setActiveType(tab.id as any)}
               className={cn(
                 "flex items-center gap-3 px-8 py-3 rounded-2xl text-[10px] font-bold uppercase tracking-widest transition-all",
-                activeType === tab.id ? "bg-brand-ebony text-white shadow-xl shadow-black/10" : "text-black/40 hover:bg-black/5"
+                activeType === tab.id ? "bg-brand-obsidian text-white shadow-xl shadow-black/10" : "text-black/40 hover:bg-black/5"
               )}
             >
               <tab.icon size={16} className={activeType === tab.id ? "" : tab.color} /> {tab.label}
@@ -186,14 +186,14 @@ export function AdminContent() {
             <select 
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value as any)}
-              className="bg-white border border-black/5 rounded-2xl py-3 px-6 text-[10px] font-bold uppercase tracking-widest outline-none focus:ring-1 focus:ring-brand-gold/50"
+              className="bg-white border border-black/5 rounded-2xl py-3 px-6 text-[10px] font-bold uppercase tracking-widest outline-none focus:ring-1 focus:ring-brand-bronze/50"
             >
               <option value="title">Nom</option>
               <option value="date">Date</option>
             </select>
             <button 
               onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
-              className="p-3 bg-white border border-black/5 rounded-2xl text-black/40 hover:text-brand-gold transition-colors"
+              className="p-3 bg-white border border-black/5 rounded-2xl text-black/40 hover:text-brand-bronze transition-colors"
             >
               <Search size={18} className={cn("transition-transform", sortOrder === 'desc' && "rotate-180")} />
             </button>
@@ -222,21 +222,21 @@ export function AdminContent() {
             </div>
             <div className="flex-1 min-w-0 flex flex-col">
               <div className="flex items-center justify-between mb-2">
-                 <span className="text-[10px] font-bold tracking-widest uppercase text-brand-gold opacity-60 flex items-center gap-2">
+                 <span className="text-[10px] font-bold tracking-widest uppercase text-brand-bronze opacity-60 flex items-center gap-2">
                    <Tag size={12} /> {item.category || item.tag || 'Nouveauté'}
                  </span>
                  <div className="flex gap-1">
                     <a 
                       href={item.type === 'routine' ? `/routines?id=${item.id}` : `/blog?id=${item.id}`}
                       target="_blank"
-                      className="p-2 hover:bg-black/5 rounded-lg text-black/20 hover:text-brand-ebony transition-all"
+                      className="p-2 hover:bg-black/5 rounded-lg text-black/20 hover:text-brand-obsidian transition-all"
                       title="Voir sur le site"
                     >
                       <Eye size={16} />
                     </a>
                     <button 
                       onClick={() => handleEdit(item)}
-                      className="p-2 hover:bg-black/5 rounded-lg text-black/20 hover:text-brand-ebony transition-all"
+                      className="p-2 hover:bg-black/5 rounded-lg text-black/20 hover:text-brand-obsidian transition-all"
                     >
                       <Edit2 size={16} />
                     </button>
@@ -248,17 +248,17 @@ export function AdminContent() {
                     </button>
                  </div>
               </div>
-              <h3 className="font-bold text-lg mb-2 truncate group-hover:text-brand-gold transition-colors">{item.title}</h3>
+              <h3 className="font-bold text-lg mb-2 truncate group-hover:text-brand-bronze transition-colors">{item.title}</h3>
               <p className="text-xs text-black/40 line-clamp-2 mb-4 leading-relaxed">{item.excerpt}</p>
               
               <div className="mt-auto flex items-center justify-between">
                 <div className="flex items-center gap-4 text-[10px] font-bold uppercase tracking-widest text-black/20">
                    <span className="flex items-center gap-1.5"><Clock size={12} /> {item.date || 'Auto'}</span>
-                   <span className={cn("flex items-center gap-1.5", item.status === 'published' ? "text-emerald-500" : "text-brand-gold")}>
+                   <span className={cn("flex items-center gap-1.5", item.status === 'published' ? "text-emerald-500" : "text-brand-bronze")}>
                      <CheckCircle2 size={12} /> {item.status === 'published' ? 'Publié' : 'Brouillon'}
                    </span>
                 </div>
-                <button className="w-10 h-10 rounded-full bg-black/5 flex items-center justify-center text-black/40 group-hover:bg-brand-ebony group-hover:text-white transition-all">
+                <button className="w-10 h-10 rounded-full bg-black/5 flex items-center justify-center text-black/40 group-hover:bg-brand-obsidian group-hover:text-white transition-all">
                   <ArrowRight size={18} />
                 </button>
               </div>
@@ -276,7 +276,7 @@ export function AdminContent() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setIsFormOpen(false)}
-              className="absolute inset-0 bg-brand-ebony/60 backdrop-blur-sm"
+              className="absolute inset-0 bg-brand-obsidian/60 backdrop-blur-sm"
             />
             <motion.div
               initial={{ opacity: 0, scale: 0.9, y: 20 }}
@@ -296,7 +296,7 @@ export function AdminContent() {
                       required
                       value={formData.title}
                       onChange={e => setFormData({ ...formData, title: e.target.value })}
-                      className="w-full bg-black/5 border-none rounded-2xl p-4 text-sm outline-none focus:ring-1 focus:ring-brand-gold/50"
+                      className="w-full bg-black/5 border-none rounded-2xl p-4 text-sm outline-none focus:ring-1 focus:ring-brand-bronze/50"
                       placeholder="Ex: Les bienfaits du Karité"
                     />
                   </div>
@@ -306,7 +306,7 @@ export function AdminContent() {
                     <select 
                       value={formData.type}
                       onChange={e => setFormData({ ...formData, type: e.target.value as any })}
-                      className="w-full bg-black/5 border-none rounded-2xl p-4 text-sm outline-none focus:ring-1 focus:ring-brand-gold/50"
+                      className="w-full bg-black/5 border-none rounded-2xl p-4 text-sm outline-none focus:ring-1 focus:ring-brand-bronze/50"
                     >
                       <option value="article">Article</option>
                       <option value="promo">Promotion</option>
@@ -319,7 +319,7 @@ export function AdminContent() {
                     <input 
                       value={formData.category}
                       onChange={e => setFormData({ ...formData, category: e.target.value })}
-                      className="w-full bg-black/5 border-none rounded-2xl p-4 text-sm outline-none focus:ring-1 focus:ring-brand-gold/50"
+                      className="w-full bg-black/5 border-none rounded-2xl p-4 text-sm outline-none focus:ring-1 focus:ring-brand-bronze/50"
                       placeholder="Ex: Soin du visage"
                     />
                   </div>
@@ -330,18 +330,18 @@ export function AdminContent() {
                       rows={2}
                       value={formData.excerpt}
                       onChange={e => setFormData({ ...formData, excerpt: e.target.value })}
-                      className="w-full bg-black/5 border-none rounded-2xl p-4 text-sm outline-none focus:ring-1 focus:ring-brand-gold/50 resize-none"
+                      className="w-full bg-black/5 border-none rounded-2xl p-4 text-sm outline-none focus:ring-1 focus:ring-brand-bronze/50 resize-none"
                     />
                   </div>
 
                   <div className="col-span-2">
                     <label className="text-[10px] font-bold uppercase tracking-widest text-black/40 mb-2 block">Image de couverture</label>
-                    <label className="border-2 border-dashed border-black/10 rounded-3xl flex flex-col items-center justify-center p-8 group cursor-pointer hover:border-brand-gold/30 transition-all bg-black/[0.01] relative overflow-hidden">
+                    <label className="border-2 border-dashed border-black/10 rounded-3xl flex flex-col items-center justify-center p-8 group cursor-pointer hover:border-brand-bronze/30 transition-all bg-black/[0.01] relative overflow-hidden">
                        {formData.image ? (
                          <img src={formData.image} className="absolute inset-0 w-full h-full object-cover opacity-20" alt="Preview" />
                        ) : (
                          <div className="flex flex-col items-center">
-                           <ImageIcon size={32} className="text-black/10 mb-2 group-hover:text-brand-gold/30 transition-all" />
+                           <ImageIcon size={32} className="text-black/10 mb-2 group-hover:text-brand-bronze/30 transition-all" />
                            <p className="text-[10px] font-bold text-black/30">CLIQUEZ POUR TÉLÉVERSER</p>
                          </div>
                        )}
@@ -351,10 +351,10 @@ export function AdminContent() {
 
                   <div className="col-span-2">
                     <label className="text-[10px] font-bold uppercase tracking-widest text-black/40 mb-2 block">Contenu (Éditeur Enrichi)</label>
-                    <div className="bg-black/5 rounded-3xl p-4 min-h-[400px] border border-black/10 focus-within:ring-1 focus-within:ring-brand-gold/50 transition-all">
+                    <div className="bg-black/5 rounded-3xl p-4 min-h-[400px] border border-black/10 focus-within:ring-1 focus-within:ring-brand-bronze/50 transition-all">
                        <div className="flex gap-2 mb-4 p-2 border-b border-black/10 overflow-x-auto no-scrollbar">
                           {['Bold', 'Italic', 'Underline', 'H1', 'H2', 'Bullet List'].map(tool => (
-                            <button key={tool} type="button" className="px-3 py-1 hover:bg-black/5 rounded text-[10px] font-bold uppercase tracking-widest text-black/40 hover:text-brand-gold transition-colors">{tool}</button>
+                            <button key={tool} type="button" className="px-3 py-1 hover:bg-black/5 rounded text-[10px] font-bold uppercase tracking-widest text-black/40 hover:text-brand-bronze transition-colors">{tool}</button>
                           ))}
                        </div>
                        <textarea 
@@ -372,7 +372,7 @@ export function AdminContent() {
                       type="datetime-local"
                       value={formData.planned_at}
                       onChange={e => setFormData({ ...formData, planned_at: e.target.value })}
-                      className="w-full bg-black/5 border-none rounded-2xl p-4 text-sm outline-none focus:ring-1 focus:ring-brand-gold/50"
+                      className="w-full bg-black/5 border-none rounded-2xl p-4 text-sm outline-none focus:ring-1 focus:ring-brand-bronze/50"
                     />
                   </div>
 
@@ -381,7 +381,7 @@ export function AdminContent() {
                     <select 
                       value={formData.status}
                       onChange={e => setFormData({ ...formData, status: e.target.value })}
-                      className="w-full bg-black/5 border-none rounded-2xl p-4 text-sm outline-none focus:ring-1 focus:ring-brand-gold/50"
+                      className="w-full bg-black/5 border-none rounded-2xl p-4 text-sm outline-none focus:ring-1 focus:ring-brand-bronze/50"
                     >
                       <option value="published">Publié</option>
                       <option value="draft">Brouillon</option>
@@ -409,7 +409,7 @@ export function AdminContent() {
                   <button 
                     type="submit"
                     disabled={isSubmitting}
-                    className="flex-1 bg-brand-ebony text-white h-14 rounded-2xl text-[10px] font-bold uppercase tracking-widest hover:bg-brand-gold hover:text-brand-ebony transition-all disabled:opacity-50"
+                    className="flex-1 bg-brand-obsidian text-white h-14 rounded-2xl text-[10px] font-bold uppercase tracking-widest hover:bg-brand-bronze hover:text-brand-obsidian transition-all disabled:opacity-50"
                   >
                     {isSubmitting ? 'Publication...' : (editingItem ? 'Mettre à jour' : 'Publier')}
                   </button>

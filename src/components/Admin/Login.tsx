@@ -39,7 +39,7 @@ export function AdminLogin({ onLogin }: AdminLoginProps) {
   };
 
   return (
-    <div className="min-h-screen bg-brand-cream/30 flex items-center justify-center p-6 bg-[url('https://www.transparenttextures.com/patterns/natural-paper.png')]">
+    <div className="min-h-screen bg-brand-bronze/5 flex items-center justify-center p-6 bg-[url('https://www.transparenttextures.com/patterns/natural-paper.png')]">
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -51,32 +51,32 @@ export function AdminLogin({ onLogin }: AdminLoginProps) {
 
         <div className="mb-12 text-center">
           <h1 className="luxury-text text-4xl mb-4 tracking-tighter">PRÉCIEUSE</h1>
-          <p className="text-[10px] uppercase font-bold tracking-[0.4em] text-brand-gold opacity-80 mb-10">Access Portal</p>
-          <div className="h-[1px] w-12 bg-brand-gold mx-auto" />
+          <p className="text-[10px] uppercase font-bold tracking-[0.4em] text-brand-bronze opacity-80 mb-10">Access Portal</p>
+          <div className="h-[1px] w-12 bg-brand-bronze mx-auto" />
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-8">
           <div className="space-y-6">
             <div className="relative group">
-              <Mail className="absolute left-6 top-1/2 -translate-y-1/2 text-black/20 group-focus-within:text-brand-gold transition-colors" size={20} />
+              <Mail className="absolute left-6 top-1/2 -translate-y-1/2 text-black/20 group-focus-within:text-brand-bronze transition-colors" size={20} />
               <input 
                 type="email" 
                 placeholder="Identifiant impérial (Email)"
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full bg-black/[0.02] border-none rounded-[2rem] py-5 pl-16 pr-8 outline-none focus:ring-1 focus:ring-brand-gold/50 transition-all font-medium placeholder:text-black/20"
+                className="w-full bg-black/[0.02] border-none rounded-[2rem] py-5 pl-16 pr-8 outline-none focus:ring-1 focus:ring-brand-bronze/50 transition-all font-medium placeholder:text-black/20"
               />
             </div>
             <div className="relative group">
-              <Lock className="absolute left-6 top-1/2 -translate-y-1/2 text-black/20 group-focus-within:text-brand-gold transition-colors" size={20} />
+              <Lock className="absolute left-6 top-1/2 -translate-y-1/2 text-black/20 group-focus-within:text-brand-bronze transition-colors" size={20} />
               <input 
                 type="password" 
                 placeholder="Mot de passe secret"
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full bg-black/[0.02] border-none rounded-[2rem] py-5 pl-16 pr-8 outline-none focus:ring-1 focus:ring-brand-gold/50 transition-all font-medium placeholder:text-black/20"
+                className="w-full bg-black/[0.02] border-none rounded-[2rem] py-5 pl-16 pr-8 outline-none focus:ring-1 focus:ring-brand-bronze/50 transition-all font-medium placeholder:text-black/20"
               />
             </div>
           </div>
@@ -84,7 +84,7 @@ export function AdminLogin({ onLogin }: AdminLoginProps) {
           <button 
             type="submit"
             disabled={isLoading}
-            className="w-full bg-brand-ebony text-white py-6 rounded-[2rem] flex items-center justify-center gap-4 text-xs font-bold tracking-widest hover:bg-brand-gold hover:text-brand-ebony transition-all shadow-2xl shadow-black/10 group disabled:opacity-50"
+            className="w-full bg-brand-obsidian text-white py-6 rounded-[2rem] flex items-center justify-center gap-4 text-xs font-bold tracking-widest hover:bg-brand-bronze hover:text-brand-obsidian transition-all shadow-2xl shadow-black/10 group disabled:opacity-50"
           >
             {isLoading ? (
               <Loader2 className="animate-spin" size={20} />

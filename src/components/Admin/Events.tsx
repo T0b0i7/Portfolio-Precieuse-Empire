@@ -148,7 +148,7 @@ export function AdminEvents() {
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'published': return 'text-emerald-600 bg-emerald-50';
-      case 'draft': return 'text-brand-gold bg-brand-gold/10';
+      case 'draft': return 'text-brand-bronze bg-brand-bronze/10';
       case 'archived': return 'text-black/40 bg-black/5';
       default: return 'text-black/40 bg-black/5';
     }
@@ -163,7 +163,7 @@ export function AdminEvents() {
         </div>
         <button 
           onClick={handleCreate}
-          className="bg-brand-ebony text-white h-14 px-8 rounded-2xl flex items-center justify-center gap-3 text-xs font-bold hover:bg-brand-gold hover:text-brand-ebony transition-all shadow-xl group"
+          className="bg-brand-obsidian text-white h-14 px-8 rounded-2xl flex items-center justify-center gap-3 text-xs font-bold hover:bg-brand-bronze hover:text-brand-obsidian transition-all shadow-xl group"
         >
           <Plus size={20} className="group-hover:rotate-90 transition-transform" /> CRÉER UN ÉVÉNEMENT
         </button>
@@ -209,11 +209,11 @@ export function AdminEvents() {
               
               <div className="space-y-3 mb-8">
                 <div className="flex items-center gap-3 text-xs text-black/40">
-                  <Calendar size={14} className="text-brand-gold" />
+                  <Calendar size={14} className="text-brand-bronze" />
                   <span>{new Date(event.date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}</span>
                 </div>
                 <div className="flex items-center gap-3 text-xs text-black/40">
-                  <MapPin size={14} className="text-brand-gold" />
+                  <MapPin size={14} className="text-brand-bronze" />
                   <span className="truncate">{event.location}</span>
                 </div>
               </div>
@@ -228,7 +228,7 @@ export function AdminEvents() {
                 </div>
                 <button 
                   onClick={() => handleViewRegistrations(event)}
-                  className="text-[10px] font-bold uppercase tracking-widest text-brand-gold hover:underline flex items-center gap-2"
+                  className="text-[10px] font-bold uppercase tracking-widest text-brand-bronze hover:underline flex items-center gap-2"
                 >
                   GÉRER LES INSCRIPTIONS <ChevronRight size={14} />
                 </button>
@@ -247,7 +247,7 @@ export function AdminEvents() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setIsFormOpen(false)}
-              className="absolute inset-0 bg-brand-ebony/60 backdrop-blur-sm"
+              className="absolute inset-0 bg-brand-obsidian/60 backdrop-blur-sm"
             />
             <motion.div
               initial={{ opacity: 0, scale: 0.9, y: 20 }}
@@ -267,7 +267,7 @@ export function AdminEvents() {
                       required
                       value={formData.title}
                       onChange={e => setFormData({ ...formData, title: e.target.value })}
-                      className="w-full bg-black/5 border-none rounded-2xl p-4 text-sm outline-none focus:ring-1 focus:ring-brand-gold/50"
+                      className="w-full bg-black/5 border-none rounded-2xl p-4 text-sm outline-none focus:ring-1 focus:ring-brand-bronze/50"
                       placeholder="Ex: Lancement Collection Été"
                     />
                   </div>
@@ -279,7 +279,7 @@ export function AdminEvents() {
                       required
                       value={formData.date}
                       onChange={e => setFormData({ ...formData, date: e.target.value })}
-                      className="w-full bg-black/5 border-none rounded-2xl p-4 text-sm outline-none focus:ring-1 focus:ring-brand-gold/50"
+                      className="w-full bg-black/5 border-none rounded-2xl p-4 text-sm outline-none focus:ring-1 focus:ring-brand-bronze/50"
                     />
                   </div>
 
@@ -289,7 +289,7 @@ export function AdminEvents() {
                       required
                       value={formData.location}
                       onChange={e => setFormData({ ...formData, location: e.target.value })}
-                      className="w-full bg-black/5 border-none rounded-2xl p-4 text-sm outline-none focus:ring-1 focus:ring-brand-gold/50"
+                      className="w-full bg-black/5 border-none rounded-2xl p-4 text-sm outline-none focus:ring-1 focus:ring-brand-bronze/50"
                       placeholder="Showroom Paris / Zoom"
                     />
                   </div>
@@ -299,7 +299,7 @@ export function AdminEvents() {
                     <input 
                       value={formData.image}
                       onChange={e => setFormData({ ...formData, image: e.target.value })}
-                      className="w-full bg-black/5 border-none rounded-2xl p-4 text-sm outline-none focus:ring-1 focus:ring-brand-gold/50"
+                      className="w-full bg-black/5 border-none rounded-2xl p-4 text-sm outline-none focus:ring-1 focus:ring-brand-bronze/50"
                     />
                   </div>
 
@@ -309,7 +309,7 @@ export function AdminEvents() {
                       rows={4}
                       value={formData.description}
                       onChange={e => setFormData({ ...formData, description: e.target.value })}
-                      className="w-full bg-black/5 border-none rounded-2xl p-4 text-sm outline-none focus:ring-1 focus:ring-brand-gold/50 resize-none"
+                      className="w-full bg-black/5 border-none rounded-2xl p-4 text-sm outline-none focus:ring-1 focus:ring-brand-bronze/50 resize-none"
                     />
                   </div>
 
@@ -318,7 +318,7 @@ export function AdminEvents() {
                     <select 
                       value={formData.status}
                       onChange={e => setFormData({ ...formData, status: e.target.value })}
-                      className="w-full bg-black/5 border-none rounded-2xl p-4 text-sm outline-none focus:ring-1 focus:ring-brand-gold/50"
+                      className="w-full bg-black/5 border-none rounded-2xl p-4 text-sm outline-none focus:ring-1 focus:ring-brand-bronze/50"
                     >
                       <option value="draft">Brouillon</option>
                       <option value="published">Publié</option>
@@ -338,7 +338,7 @@ export function AdminEvents() {
                   <button 
                     type="submit"
                     disabled={isSubmitting}
-                    className="flex-1 bg-brand-ebony text-white h-14 rounded-2xl text-[10px] font-bold uppercase tracking-widest hover:bg-brand-gold hover:text-brand-ebony transition-all disabled:opacity-50"
+                    className="flex-1 bg-brand-obsidian text-white h-14 rounded-2xl text-[10px] font-bold uppercase tracking-widest hover:bg-brand-bronze hover:text-brand-obsidian transition-all disabled:opacity-50"
                   >
                     {isSubmitting ? 'Enregistrement...' : 'Enregistrer'}
                   </button>
@@ -353,7 +353,7 @@ export function AdminEvents() {
       <AnimatePresence>
         {isRegistrationsOpen && (
           <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setIsRegistrationsOpen(false)} className="absolute inset-0 bg-brand-ebony/60 backdrop-blur-sm" />
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setIsRegistrationsOpen(false)} className="absolute inset-0 bg-brand-obsidian/60 backdrop-blur-sm" />
             <motion.div initial={{ opacity: 0, scale: 0.9, y: 30 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.9, y: 30 }} className="relative bg-white w-full max-w-3xl rounded-[3.5rem] shadow-2xl overflow-hidden flex flex-col max-h-[85vh]">
                <div className="p-10 border-b border-black/5">
                   <div className="flex items-center justify-between mb-4">
@@ -361,7 +361,7 @@ export function AdminEvents() {
                      <div className="flex items-center gap-4">
                         <button 
                           onClick={handleExportCSV}
-                          className="px-6 py-2 bg-brand-gold text-brand-ebony rounded-xl text-[10px] font-bold uppercase tracking-widest hover:brightness-110 transition-all"
+                          className="px-6 py-2 bg-brand-bronze text-brand-obsidian rounded-xl text-[10px] font-bold uppercase tracking-widest hover:brightness-110 transition-all"
                         >
                           Exporter CSV
                         </button>
@@ -374,7 +374,7 @@ export function AdminEvents() {
                <div className="flex-1 overflow-y-auto p-10 no-scrollbar">
                   {loadingReg ? (
                     <div className="flex items-center justify-center h-40">
-                       <div className="w-8 h-8 border-2 border-brand-gold border-t-transparent rounded-full animate-spin" />
+                       <div className="w-8 h-8 border-2 border-brand-bronze border-t-transparent rounded-full animate-spin" />
                     </div>
                   ) : registrations.length === 0 ? (
                     <div className="text-center py-20 bg-black/[0.01] rounded-[2.5rem] border border-dashed border-black/5">
@@ -385,7 +385,7 @@ export function AdminEvents() {
                        {registrations.map((reg) => (
                          <div key={reg.id} className="flex items-center justify-between p-6 bg-black/[0.02] rounded-3xl border border-black/5 group">
                             <div className="flex items-center gap-4">
-                               <div className="w-12 h-12 rounded-xl bg-white flex items-center justify-center font-bold text-brand-gold border border-black/5 capitalize">
+                               <div className="w-12 h-12 rounded-xl bg-white flex items-center justify-center font-bold text-brand-bronze border border-black/5 capitalize">
                                   {reg.name.charAt(0)}
                                </div>
                                <div>

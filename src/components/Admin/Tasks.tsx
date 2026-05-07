@@ -119,14 +119,14 @@ export function AdminTasks({ user }: { user: any }) {
 
   const columns: { id: TaskStatus; label: string; color: string }[] = [
     { id: 'todo', label: 'À FAIRE', color: 'bg-black/5' },
-    { id: 'in_progress', label: 'EN COURS', color: 'bg-brand-gold/10' },
+    { id: 'in_progress', label: 'EN COURS', color: 'bg-brand-bronze/10' },
     { id: 'done', label: 'TERMINÉ', color: 'bg-emerald-50' },
   ];
 
   const getPriorityColor = (p: string) => {
     switch (p) {
       case 'high': return 'text-red-500 bg-red-50';
-      case 'normal': return 'text-brand-gold bg-brand-gold/10';
+      case 'normal': return 'text-brand-bronze bg-brand-bronze/10';
       case 'low': return 'text-black/40 bg-black/5';
       default: return 'text-black/40 bg-black/5';
     }
@@ -143,20 +143,20 @@ export function AdminTasks({ user }: { user: any }) {
            <div className="bg-white p-1 rounded-2xl border border-black/5 flex h-14">
              <button 
                onClick={() => setViewType('kanban')}
-               className={cn("p-2.5 rounded-xl transition-all flex items-center justify-center min-w-[3.5rem]", viewType === 'kanban' ? "bg-brand-ebony text-white shadow-lg" : "text-black/30 hover:bg-black/5")}
+               className={cn("p-2.5 rounded-xl transition-all flex items-center justify-center min-w-[3.5rem]", viewType === 'kanban' ? "bg-brand-obsidian text-white shadow-lg" : "text-black/30 hover:bg-black/5")}
              >
                <LayoutGrid size={20} />
              </button>
              <button 
                onClick={() => setViewType('list')}
-               className={cn("p-2.5 rounded-xl transition-all flex items-center justify-center min-w-[3.5rem]", viewType === 'list' ? "bg-brand-ebony text-white shadow-lg" : "text-black/30 hover:bg-black/5")}
+               className={cn("p-2.5 rounded-xl transition-all flex items-center justify-center min-w-[3.5rem]", viewType === 'list' ? "bg-brand-obsidian text-white shadow-lg" : "text-black/30 hover:bg-black/5")}
              >
                <ListIcon size={20} />
              </button>
            </div>
            <button 
             onClick={() => setIsFormOpen(true)}
-            className="bg-brand-ebony text-white h-14 px-8 rounded-2xl flex items-center gap-3 text-xs font-bold hover:bg-brand-gold hover:text-brand-ebony transition-all group shadow-xl"
+            className="bg-brand-obsidian text-white h-14 px-8 rounded-2xl flex items-center gap-3 text-xs font-bold hover:bg-brand-bronze hover:text-brand-obsidian transition-all group shadow-xl"
            >
              <Plus size={20} className="group-hover:rotate-90 transition-transform" /> NOUVELLE TÂCHE
            </button>
@@ -205,7 +205,7 @@ export function AdminTasks({ user }: { user: any }) {
                           </button>
                         </div>
                       </div>
-                      <h4 className="font-bold text-sm mb-3 group-hover:text-brand-gold transition-colors">{task.title}</h4>
+                      <h4 className="font-bold text-sm mb-3 group-hover:text-brand-bronze transition-colors">{task.title}</h4>
                       <p className="text-[11px] text-black/40 line-clamp-2 mb-6 leading-relaxed">{task.description}</p>
                       
                       <div className="flex items-center justify-between">
@@ -215,7 +215,7 @@ export function AdminTasks({ user }: { user: any }) {
                           ))}
                           <button 
                             onClick={() => setIsFormOpen(true)}
-                            className="w-8 h-8 rounded-lg border-2 border-dashed border-black/10 flex items-center justify-center text-black/20 hover:border-brand-gold hover:text-brand-gold transition-colors"
+                            className="w-8 h-8 rounded-lg border-2 border-dashed border-black/10 flex items-center justify-center text-black/20 hover:border-brand-bronze hover:text-brand-bronze transition-colors"
                           >
                             <Plus size={14} />
                           </button>
@@ -283,7 +283,7 @@ export function AdminTasks({ user }: { user: any }) {
                          <select 
                            value={task.status}
                            onChange={(e) => updateTaskStatus(task.id, e.target.value as TaskStatus)}
-                           className="bg-black/5 border-none rounded-xl py-2 px-4 text-[10px] font-bold uppercase tracking-widest outline-none focus:ring-1 focus:ring-brand-gold/50"
+                           className="bg-black/5 border-none rounded-xl py-2 px-4 text-[10px] font-bold uppercase tracking-widest outline-none focus:ring-1 focus:ring-brand-bronze/50"
                          >
                             <option value="todo">À faire</option>
                             <option value="in_progress">En cours</option>
@@ -307,7 +307,7 @@ export function AdminTasks({ user }: { user: any }) {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setIsFormOpen(false)}
-              className="absolute inset-0 bg-brand-ebony/60 backdrop-blur-sm"
+              className="absolute inset-0 bg-brand-obsidian/60 backdrop-blur-sm"
             />
             <motion.div
               initial={{ opacity: 0, scale: 0.9, y: 20 }}
@@ -325,7 +325,7 @@ export function AdminTasks({ user }: { user: any }) {
                       required
                       value={formData.title}
                       onChange={e => setFormData({ ...formData, title: e.target.value })}
-                      className="w-full bg-black/5 border-none rounded-2xl p-4 text-sm outline-none focus:ring-1 focus:ring-brand-gold/50"
+                      className="w-full bg-black/5 border-none rounded-2xl p-4 text-sm outline-none focus:ring-1 focus:ring-brand-bronze/50"
                       placeholder="Ex: Refroidir le showroom"
                     />
                   </div>
@@ -336,7 +336,7 @@ export function AdminTasks({ user }: { user: any }) {
                       <select 
                         value={formData.priority}
                         onChange={e => setFormData({ ...formData, priority: e.target.value })}
-                        className="w-full bg-black/5 border-none rounded-2xl p-4 text-sm outline-none focus:ring-1 focus:ring-brand-gold/50"
+                        className="w-full bg-black/5 border-none rounded-2xl p-4 text-sm outline-none focus:ring-1 focus:ring-brand-bronze/50"
                       >
                         <option value="low">Note de service</option>
                         <option value="normal">Normal</option>
@@ -349,7 +349,7 @@ export function AdminTasks({ user }: { user: any }) {
                         type="date"
                         value={formData.deadline}
                         onChange={e => setFormData({ ...formData, deadline: e.target.value })}
-                        className="w-full bg-black/5 border-none rounded-2xl p-4 text-sm outline-none focus:ring-1 focus:ring-brand-gold/50"
+                        className="w-full bg-black/5 border-none rounded-2xl p-4 text-sm outline-none focus:ring-1 focus:ring-brand-bronze/50"
                       />
                     </div>
                   </div>
@@ -365,14 +365,14 @@ export function AdminTasks({ user }: { user: any }) {
                             className={cn(
                               "flex flex-col items-center p-4 rounded-3xl border-2 transition-all group/btn relative",
                               formData.assignees.includes(member.id) 
-                                ? "bg-brand-gold/10 border-brand-gold" 
+                                ? "bg-brand-bronze/10 border-brand-bronze" 
                                 : "bg-white border-black/5 hover:border-black/10"
                             )}
                           >
                             <img src={member.image} className="w-10 h-10 rounded-2xl object-cover mb-2 border border-black/5 shadow-sm" alt={member.name} />
                             <span className="text-[10px] font-bold truncate w-full text-center overflow-hidden">{member.name.split(' ')[0]}</span>
                             {formData.assignees.includes(member.id) && (
-                              <div className="absolute top-2 right-2 bg-brand-gold text-brand-ebony rounded-full p-0.5">
+                              <div className="absolute top-2 right-2 bg-brand-bronze text-brand-obsidian rounded-full p-0.5">
                                 <CheckSquare size={10} />
                               </div>
                             )}
@@ -387,7 +387,7 @@ export function AdminTasks({ user }: { user: any }) {
                       rows={3}
                       value={formData.description}
                       onChange={e => setFormData({ ...formData, description: e.target.value })}
-                      className="w-full bg-black/5 border-none rounded-2xl p-4 text-sm outline-none focus:ring-1 focus:ring-brand-gold/50 resize-none"
+                      className="w-full bg-black/5 border-none rounded-2xl p-4 text-sm outline-none focus:ring-1 focus:ring-brand-bronze/50 resize-none"
                     />
                   </div>
                 </div>
@@ -403,7 +403,7 @@ export function AdminTasks({ user }: { user: any }) {
                   <button 
                     type="submit"
                     disabled={isSubmitting}
-                    className="flex-1 bg-brand-ebony text-white h-14 rounded-2xl text-[10px] font-bold uppercase tracking-widest hover:bg-brand-gold hover:text-brand-ebony transition-all shadow-2xl shadow-brand-gold/10 disabled:opacity-50"
+                    className="flex-1 bg-brand-obsidian text-white h-14 rounded-2xl text-[10px] font-bold uppercase tracking-widest hover:bg-brand-bronze hover:text-brand-obsidian transition-all shadow-2xl shadow-brand-bronze/10 disabled:opacity-50"
                   >
                     {isSubmitting ? 'Enregistrement...' : 'Lancer la Mission'}
                   </button>
